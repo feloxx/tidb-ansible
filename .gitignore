@@ -7,3 +7,4 @@ fact_files/
 *.pyc
 .vscode
 .idea/
+*.log

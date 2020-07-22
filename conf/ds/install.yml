@@ -1,0 +1,10 @@
+install:
+  installPath: 
+
+  sshPort: 11822
+
+  workers: 
+  masters: 
+
+  alertServer: 
+  apiServers: 

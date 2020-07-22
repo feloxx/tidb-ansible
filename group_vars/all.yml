@@ -5,6 +5,7 @@ deploy_user: "{{ ansible_user }}"
 status_dir: "{{ deploy_dir }}/status"
 backup_dir: "{{ deploy_dir }}/backup"
 images_dir: "{{ deploy_dir }}/images"
+env_dir:    "{{ deploy_dir }}/env"
 
 # Local
 downloads_dir: "{{ playbook_dir }}/downloads"
@@ -14,6 +15,11 @@ fetch_dir:     "{{ playbook_dir }}/collect_diagnosis"
 cert_dir:      "{{ playbook_dir }}/conf/ssl"
 script_dir:    "{{ playbook_dir }}/scripts"
 binary_dir:    "{{ playbook_dir }}/resources/bin"
+gz_dir:        "{{ playbook_dir }}/resources/gz"
+
+# env
+java_home:     "{{ env_dir }}/java/jdk-{{ java_version }}"
+scala_home:    "{{ env_dir }}/scala/scala-{{ scala_version }}"
 
 # default configuration for multiple host groups and roles
 node_exporter_port: 9100

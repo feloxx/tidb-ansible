@@ -12,6 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+# main directory
+
+- name: deploy main directory
+  become: yes
+  become_method: sudo
+  gather_facts: false
+  any_errors_fatal: true
+  hosts: all_servers
+  tags:
+    - main
+  tasks:
+    - name: mkdir
+      file: name={{ deploy_dir }} state=directory owner={{ deploy_user }} group={{ deploy_user }} mode=755
+
 # The Playbook of TiDB
 
 - name: check config locally
@@ -179,3 +194,73 @@
     - always
   roles:
     - perf_tools
+
+# The Playbook of BigData
+
+- name: deploying java
+  become: yes
+  become_method: sudo
+  any_errors_fatal: true
+  hosts: all_servers
+  tags:
+    - java
+  roles:
+    - java
+
+- name: deploying scala
+  become: yes
+  become_method: sudo
+  any_errors_fatal: true
+  hosts: all_servers
+  tags:
+    - scala
+  roles:
+    - scala
+
+- name: deploying zookeeper
+  any_errors_fatal: true
+  hosts: zookeeper_servers
+  tags:
+    - zookeeper
+  roles:
+    - zookeeper
+
+- name: deploying hadoop
+  any_errors_fatal: true
+  hosts: hadoop_servers
+  tags:
+    - hadoop
+  roles:
+    - hadoop
+
+- name: deploying hive
+  any_errors_fatal: true
+  hosts: hive_servers
+  tags:
+    - hive
+  roles:
+    - hive
+
+- name: deploying spark
+  any_errors_fatal: true
+  hosts: spark_servers
+  tags:
+    - spark
+  roles:
+    - spark
+
+- name: deploying sqoop
+  any_errors_fatal: true
+  hosts: sqoop_servers
+  tags:
+    - sqoop
+  roles:
+    - sqoop
+
+- name: deploying ds
+  any_errors_fatal: true
+  hosts: ds_servers
+  tags:
+    - ds
+  roles:
+    - ds
