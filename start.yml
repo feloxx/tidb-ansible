@@ -490,3 +490,15 @@
       vars:
         - ansible_become: false
         - ansible_connection: local
+
+# The Playbook of BigData
+
+- name: zookeeper
+  gather_facts: false
+  any_errors_fatal: true
+  hosts: zookeeper_servers
+  tags:
+    - zookeeper
+  tasks:
+    - name: start
+      shell: "source /etc/profile && sh {{ zookeeper_dir }}/bin/zkServer.sh start"

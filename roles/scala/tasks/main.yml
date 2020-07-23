@@ -3,7 +3,7 @@
 - name: create related folders
   file: name={{ env_dir }}/scala state=directory mode=755
 
-- name: scala install
+- name: install
   unarchive:
     src={{ gz_dir }}/scala-{{ scala_version }}.tar.gz
     dest={{ env_dir }}/scala/
@@ -15,5 +15,5 @@
     - { regexp: 'SCALA_HOME=', line: 'export SCALA_HOME={{ scala_home }}' }
     - { regexp: 'PATH=\$SCALA_HOME', line: 'export PATH=$SCALA_HOME/bin:$PATH' }
 
-- name: scala source profile
+- name: source profile
   shell: "source /etc/profile"

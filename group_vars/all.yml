@@ -18,8 +18,12 @@ binary_dir:    "{{ playbook_dir }}/resources/bin"
 gz_dir:        "{{ playbook_dir }}/resources/gz"
 
 # env
-java_home:     "{{ env_dir }}/java/jdk-{{ java_version }}"
-scala_home:    "{{ env_dir }}/scala/scala-{{ scala_version }}"
+java_home:      "{{ env_dir }}/java/jdk-{{ java_version }}"
+scala_home:     "{{ env_dir }}/scala/scala-{{ scala_version }}"
+
+# bigdata
+zookeeper_dir: "{{ deploy_dir }}/zookeeper-{{ zookeeper_version }}"
+
 
 # default configuration for multiple host groups and roles
 node_exporter_port: 9100

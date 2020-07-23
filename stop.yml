@@ -305,3 +305,15 @@
         port: "{{ grafana_port }}"
         state: stopped
         msg: "the grafana port {{ grafana_port }} is not down"
+
+# The Playbook of BigData
+
+- name: zookeeper
+  gather_facts: false
+  any_errors_fatal: true
+  hosts: zookeeper_servers
+  tags:
+    - zookeeper
+  tasks:
+    - name: start
+      shell: "source /etc/profile && sh {{ zookeeper_dir }}/bin/zkServer.sh stop"

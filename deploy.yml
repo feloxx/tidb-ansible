@@ -33,7 +33,8 @@
   hosts: localhost
   any_errors_fatal: true
   tags:
-    - always
+#    - always
+    - all_servers # TODO 方便调试
   roles:
     - check_config_static
 
@@ -41,7 +42,8 @@
   hosts: monitored_servers
   any_errors_fatal: true
   tags:
-    - always
+#    - always
+    - all_servers # TODO 方便调试
   roles:
     - check_system_dynamic
 
@@ -49,7 +51,8 @@
   hosts: all
   any_errors_fatal: true
   tags:
-    - always
+#    - always
+    - all_servers # TODO 方便调试
   roles:
     - check_config_dynamic
 
@@ -191,7 +194,8 @@
 - name: deploying perf-tools
   hosts: monitored_servers
   tags:
-    - always
+#    - always
+    - all_servers # TODO 方便调试
   roles:
     - perf_tools
 
