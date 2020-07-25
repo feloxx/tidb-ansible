@@ -15,4 +15,4 @@ worker:
   # worker.listen.port: 1234
 
   # default worker group
-  worker.group: default
+  # worker.group: default

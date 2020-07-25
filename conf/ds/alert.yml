@@ -1,25 +1,30 @@
 alert:
-  #alert type is EMAIL/SMS
-  alert.type: EMAIL
+  # alert type is EMAIL/SMS
+  # alert.type: EMAIL
 
   # mail server configuration
-  mail.protocol: SMTP
-  mail.server.host: xxx.xxx.com
-  mail.server.port: 25
-  mail.sender: xxx@xxx.com
-  mail.user: xxx@xxx.com
-  mail.passwd: 111111
+  # mail.protocol: SMTP
+  # mail.server.host: xxx.xxx.com
+  # mail.server.port: 25
+  # mail.sender: xxx@xxx.com
+  # mail.user: xxx@xxx.com
+  # mail.passwd: 111111
+
   # TLS
-  mail.smtp.starttls.enable: true
+
+  #mail.smtp.starttls.enable: true
+
   # SSL
-  mail.smtp.ssl.enable: false
-  mail.smtp.ssl.trust: xxx.xxx.com
+
+  # mail.smtp.ssl.enable: false
+  # mail.smtp.ssl.trust: xxx.xxx.com
 
   #xls file path,need create if not exist
   #xls.file.path: /tmp/xls
 
   # Enterprise WeChat configuration
-  enterprise.wechat.enable: false
+
+  # enterprise.wechat.enable: false
   #enterprise.wechat.corp.id: xxxxxxx
   #enterprise.wechat.secret: xxxxxxx
   #enterprise.wechat.agent.id: xxxxxxx
@@ -29,4 +34,4 @@ alert:
   #enterprise.wechat.team.send.msg: {\"toparty\":\"$toParty\",\"agentid\":\"$agentId\",\"msgtype\":\"text\",\"text\":{\"content\":\"$msg\"},\"safe\":\"0\"}
   #enterprise.wechat.user.send.msg: {\"touser\":\"$toUser\",\"agentid\":\"$agentId\",\"msgtype\":\"markdown\",\"markdown\":{\"content\":\"$msg\"}}
 
-  plugin.dir: /Users/xx/your/path/to/plugin/dir
+  # plugin.dir: /Users/xx/your/path/to/plugin/dir

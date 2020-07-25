@@ -502,3 +502,13 @@
   tasks:
     - name: start
       shell: "source /etc/profile && sh {{ zookeeper_dir }}/bin/zkServer.sh start"
+
+- name: ds
+  gather_facts: false
+  any_errors_fatal: true
+  hosts: ds_api_log_alert
+  tags:
+    - ds
+  tasks:
+    - name: start
+      shell: "source /etc/profile && sh {{ ds_dir }}/bin/start-all.sh"

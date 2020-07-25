@@ -23,6 +23,12 @@ scala_home:     "{{ env_dir }}/scala/scala-{{ scala_version }}"
 
 # bigdata
 zookeeper_dir: "{{ deploy_dir }}/zookeeper-{{ zookeeper_version }}"
+hadoop_dir: "{{ deploy_dir }}/hadoop-{{ hadoop_version }}"
+hive_dir: "{{ deploy_dir }}/hive-{{ hive_version }}"
+spark_dir: "{{ deploy_dir }}/spark-{{ spark_version }}"
+sqoop_dir: "{{ deploy_dir }}/sqoop-{{ sqoop_version }}"
+
+ds_dir: "{{ deploy_dir }}/ds-{{ ds_version }}"
 
 
 # default configuration for multiple host groups and roles

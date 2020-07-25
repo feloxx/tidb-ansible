@@ -1,4 +1,6 @@
-create schema dolphinscheduler2 collate utf8_general_ci;
+create schema ds collate utf8_general_ci;
+
+use ds;
 
 create table QRTZ_CALENDARS
 (

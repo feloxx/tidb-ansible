@@ -268,3 +268,15 @@
     - ds
   roles:
     - ds
+
+# TODO ds and zookeeper must be on the same node
+- name: cleaning ds zookeeper path
+  hosts: zookeeper_servers[0]
+  tags:
+    - ds
+  tasks:
+    - name: clean
+      shell: "source /etc/profile && {{ zookeeper_dir }}/bin/zkCli.sh -server {% for url in groups['zookeeper_servers'] %}{{ hostvars[url].ansible_host }}:2181{% if not loop.last %}{{','}}{% endif %}{% endfor %} rmr /dolphinscheduler"
+    - name: ds deoploy successful
+      debug: msg=The address of ds is {{ groups['ds_api_log_alert'][0] }}
+

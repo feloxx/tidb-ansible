@@ -8,3 +8,4 @@ fact_files/
 .vscode
 .idea/
 *.log
+test.yml

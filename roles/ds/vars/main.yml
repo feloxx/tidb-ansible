@@ -1,1 +1,2 @@
-ds_backend_dir: "{{ deploy_dir }}/backend/"
+ds_dir: "{{ deploy_dir }}/ds-{{ ds_version }}"
+

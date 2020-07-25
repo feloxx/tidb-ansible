@@ -1,0 +1,12 @@
+#!/bin/bash
+
+source ~/.bash_profile && source /etc/profile
+
+if [ `echo {{ zookeeper_version }} | awk '{split($0,a,"."); print a[length(a)]}'` -gt 7 ];then
+  {{ zookeeper_dir }}/bin/zkCli.sh -server {% for url in groups['zookeeper_servers'] %}{{ hostvars[url].ansible_host }}{% if not loop.last %}{{','}}{% endif %}{% endfor %}  rmr $1
+else
+  {{ zookeeper_dir }}/bin/zkCli.sh -server {% for url in groups['zookeeper_servers'] %}{{ hostvars[url].ansible_host }}:2181{% if not loop.last %}{{','}}{% endif %}{% endfor %} <<EOF
+  rmr $1
+  quit
+EOF
+fi

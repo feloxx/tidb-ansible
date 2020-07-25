@@ -1,6 +1,6 @@
-{% for item, value in install_config_conf.install_config | dictsort_by_value_type -%}
-{% if value is not mapping -%}
-{{ item }} = {{ value }}
-{% else %}
-{% endif %}
-{% endfor %}
+sshPort={{ ansible_port }}
+
+alertServer={% for url in groups['ds_api_log_alert'] %}{{ hostvars[url].ansible_host }}{% if not loop.last %}{{','}}{% endif %}{% endfor %}
+apiServer={% for url in groups['ds_api_log_alert'] %}{{ hostvars[url].ansible_host }}{% if not loop.last %}{{','}}{% endif %}{% endfor %}
+masters={% for url in groups['ds_masters'] %}{{ hostvars[url].ansible_host }}{% if not loop.last %}{{','}}{% endif %}{% endfor %}
+workers={% for url in groups['ds_workers'] %}{{ hostvars[url].ansible_host }}:default{% if not loop.last %}{{','}}{% endif %}{% endfor %}
