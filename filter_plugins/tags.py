@@ -26,6 +26,12 @@ def dictsort_by_value_type(d):
     vals = list(d.items())
     return sorted(vals, key=lambda p: (isinstance(p[1], dict), p[0], p[1]))
 
+def mkstring_zk(s):
+    return ','.join(map(lambda x: x+':2181', s))
+
+def mkstring_ds(s):
+    return ','.join(map(lambda x: x+':default', s))
+
 def tikv_server_labels_format(label_str):
     label_str = str(label_str or '')
     labels = set()

@@ -12,13 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+# main directory
+
+- name: deploy main directory
+  become: yes
+  become_method: sudo
+  gather_facts: false
+  any_errors_fatal: true
+  hosts: all_servers
+  tags:
+    - main
+  tasks:
+    - name: mkdir
+      file: name={{ deploy_dir }} state=directory owner={{ deploy_user }} group={{ deploy_user }} mode=755
+
 # The Playbook of TiDB
 
 - name: check config locally
   hosts: localhost
   any_errors_fatal: true
   tags:
-    - always
+#    - always
+    - all_servers # TODO 方便调试
   roles:
     - check_config_static
 
@@ -26,7 +42,8 @@
   hosts: monitored_servers
   any_errors_fatal: true
   tags:
-    - always
+#    - always
+    - all_servers # TODO 方便调试
   roles:
     - check_system_dynamic
 
@@ -34,7 +51,8 @@
   hosts: all
   any_errors_fatal: true
   tags:
-    - always
+#    - always
+    - all_servers # TODO 方便调试
   roles:
     - check_config_dynamic
 
@@ -73,6 +91,7 @@
   roles:
     - blackbox_exporter
 
+# TODO 为什么要去download里再拿一次？
 - name: deploying diagnostic tools
   hosts: monitored_servers
   tags:
@@ -176,6 +195,93 @@
 - name: deploying perf-tools
   hosts: monitored_servers
   tags:
-    - always
+#    - always
+    - all_servers # TODO 方便调试
   roles:
     - perf_tools
+
+# The Playbook of BigData
+
+- name: deploying java
+  become: yes
+  become_method: sudo
+  any_errors_fatal: true
+  hosts: all_servers
+  tags:
+    - java
+  roles:
+    - java
+
+- name: deploying scala
+  become: yes
+  become_method: sudo
+  any_errors_fatal: true
+  hosts: all_servers
+  tags:
+    - scala
+  roles:
+    - scala
+
+- name: deploying zookeeper
+  any_errors_fatal: true
+  hosts: zookeeper_servers
+  tags:
+    - zookeeper
+  roles:
+    - zookeeper
+
+- name: deploying hadoop
+  any_errors_fatal: true
+  hosts: hadoop_servers
+  tags:
+    - hadoop
+  roles:
+    - hadoop
+
+#- name: deploying hive
+#  any_errors_fatal: true
+#  hosts: hive_servers
+#  tags:
+#    - hive
+#  roles:
+#    - hive
+#
+#- name: deploying spark
+#  any_errors_fatal: true
+#  hosts: spark_servers
+#  tags:
+#    - spark
+#  roles:
+#    - spark
+#
+#- name: deploying sqoop
+#  any_errors_fatal: true
+#  hosts: sqoop_servers
+#  tags:
+#    - sqoop
+#  roles:
+#    - sqoop
+#
+#- name: deploying ds
+#  any_errors_fatal: true
+#  hosts: ds_servers
+#  tags:
+#    - ds
+#  roles:
+#    - ds
+
+# TODO ds and zookeeper must be on the same node
+#- name: cleaning ds zookeeper path
+#  hosts: zookeeper_servers[0]
+#  tags:
+#    - ds
+#  tasks:
+#    - name: check zookeeper
+#      shell: ps -ef | grep QuorumPeerMain | grep -v grep | wc -l
+#      register: check_zookeeper
+#    - name: clean ds zookeeper node
+#      shell: "source /etc/profile && {{ zookeeper_home }}/bin/zkCli.sh -server {% for url in groups['zookeeper_servers'] %}{{ hostvars[url].ansible_host }}:2181{% if not loop.last %}{{','}}{% endif %}{% endfor %} rmr /dolphinscheduler"
+#      when: check_zookeeper.stdout | int > 0
+#    - name: ds deoploy successful
+#      debug: msg=The address of ds is {{ hostvars[groups['ds_api_log_alert'][0]].ansible_host }}
+#

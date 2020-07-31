@@ -1,0 +1,19 @@
+---
+
+- name: create related folders
+  file: name={{ env_dir }}/java state=directory mode=755
+
+- name: install
+  unarchive:
+    src={{ gz_dir }}/jdk-{{ java_version }}.tar.gz
+    dest={{ env_dir }}/java/
+    mode=755
+
+- name: setting profile
+  lineinfile: dest=/etc/profile state=present regexp={{ item.regexp }} line={{ item.line }}
+  with_items:
+    - { regexp: 'JAVA_HOME=', line: 'export JAVA_HOME={{ java_home }}' }
+    - { regexp: 'PATH=\$JAVA_HOME', line: 'export PATH=$JAVA_HOME/bin:$PATH' }
+
+- name: source profile
+  shell: "source /etc/profile"

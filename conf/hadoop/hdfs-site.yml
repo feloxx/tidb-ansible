@@ -1,0 +1,86 @@
+---
+
+hdfs:
+
+  # hdfs元数据存储的路径
+  # namenode dir
+  # dfs.namenode.name.dir: "/data1/bigdata/hadoop/hadoop2.7.7/nn"
+
+  # hdfs数据存储的路径
+  # datanode dir
+  # dfs.datanode.data.dir: "/data1/bigdata/hadoop/hadoop2.7.7/dn"
+
+  # 副本个数
+  # number of copies of files
+  # dfs.replication: 3
+
+  # HDFS 权限验证
+  # HDFS permission authentication
+  # dfs.permissions.enabled: false
+
+  # 开启WebHDFS功能（基于REST的接口服务）
+  # dfs.webhdfs.enabled: ture
+
+  # ###################### HA相关的配置 ######################
+  # related to HA
+
+  # hdfs 的 nameservices名称
+  # dfs.nameservices
+  # dfs.ha.namenodes: "mycluster"
+
+  # 指定集群两个namenode的名称分别为nn1,nn2
+  # specify the names of the two Namenodes in the cluster
+  # dfs.ha.namenodes.mycluster: "nn1,nn2"
+
+  # 配置nn1,nn2的rpc通信端口
+  # dfs.namenode.rpc-address.mycluster.nn1: "192.168.1.101:8020"
+  # dfs.namenode.rpc-address.mycluster.nn2: "192.168.1.102:8020"
+
+  # 配置nn1,nn2的http通信端口
+  # dfs.namenode.http-address.mycluster.nn1: "192.168.1.101:50070"
+  # dfs.namenode.http-address.mycluster.nn2: "192.168.1.102:50070"
+
+  # 指定namenode元数据存储在journalnode中的路径
+  # dfs.namenode.shared.edits.dir: "qjournal://192.168.1.101:8485;192.168.1.102:8485/mycluster"
+
+  # journalnode日志文件存储的路径
+  # dfs.journalnode.edits.dir: "/data1/bigdata/hadoop/hadoop-2.7.7/journal"
+
+  # HDFS客户端连接active namenode的java类
+  # dfs.client.failover.proxy.provider.mycluster: "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider"
+
+  # 配置隔离机制为ssh
+  # dfs.ha.fencing.methods: "sshfence"
+
+  # 指定秘钥的位置
+  # dfs.ha.fencing.ssh.private-key-files: "/home/tidb/.ssh/id_rsa"
+
+  # 开启自动故障转移
+  # dfs.ha.automatic-failover.enabled: true
+
+  # dfs.namenode.secondary.http-address: ""
+
+
+  # 网络不好的时候使用以下配置
+  # use the Internet when it's not working
+  # dfs.ha.fencing.ssh.connect-timeout: 30000
+
+  # dfs.qjournal.start-segment.timeout.ms: 500000000
+
+  # dfs.qjournal.prepare-recovery.timeout.ms: 500000000
+
+  # dfs.qjournal.accept-recovery.timeout.ms: 500000000
+
+  # dfs.qjournal.finalize-segment.timeout.ms: 500000000
+
+  # dfs.qjournal.select-input-streams.timeout.ms: 500000000
+
+  # dfs.qjournal.get-journal-state.timeout.ms: 500000000
+
+  # dfs.qjournal.new-epoch.timeout.ms: 500000000
+
+  # dfs.qjournal.write-txns.timeout.ms: 500000000
+
+  # ha.zookeeper.session-timeout.ms: 500000000
+
+

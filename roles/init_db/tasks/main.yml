@@ -1,0 +1,26 @@
+---
+
+- name: init db of ds
+
+- name: delete related folders
+  file: name={{ item }} state=absent
+  with_items:
+    - "{{ deploy_dir }}/init"
+
+- name: create related folders
+  file: name={{ item }} state=directory mode=755 recurse=yes
+  with_items:
+    - "{{ deploy_dir }}/init"
+
+- name: copy ds ddl
+  template: src=ds-ddl-1.3.1.sql dest={{ deploy_dir }}/init/ds-ddl-1.3.1.sql mode=755
+
+- name: copy ds dml
+  template: src=ds-dml-1.3.1.sql dest={{ deploy_dir }}/init/ds-dml-1.3.1.sql mode=755
+
+- name: copy ds init shell
+  template: src=ds-init.sh.j2 dest={{ deploy_dir }}/init/ds-init.sh mode=755
+
+- name: ds init
+  shell: sh {{ deploy_dir }}/init/ds-init.sh #TODO 账号 密码
+

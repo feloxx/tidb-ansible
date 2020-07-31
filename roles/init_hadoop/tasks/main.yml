@@ -1,0 +1,28 @@
+---
+
+# zk needs to be with the namenode
+# TODO hidden trouble
+- name: check zookeeper
+  shell: ps -ef | grep QuorumPeerMain | grep -v grep | wc -l
+  register: check_zookeeper
+- name: clean ds zookeeper node
+  shell: "source /etc/profile && {{ zookeeper_home }}/bin/zkCli.sh -server {% for url in groups['zookeeper_servers'] %}{{ hostvars[url].ansible_host }}:2181{% if not loop.last %}{{','}}{% endif %}{% endfor %} rmr /hadoop-ha"
+  when: check_zookeeper.stdout | int > 0 and name == "master"
+
+- name: format zkfc
+  shell: "source /etc/profile && sh {{ hadoop_home }}/bin/hdfs zkfc -formatZK"
+  when: name == "master"
+
+- name: start journalname
+  shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/hadoop-daemon.sh start journalnode"
+
+- name: format namenode
+  shell: "source /etc/profile && sh {{ hadoop_home }}/bin/hdfs namenode -format"
+  when: name == "master"
+
+- name: copy metadata to nn2
+  shell: "scp -r -P {{ ansible_port|default(22) }} {{ hadoop_home }}/hdfs/nn/* {{ ansible_user }}@{{ groups['nodemanager_servers'][1] }}:/{{ hadoop_home }}/hdfs/nn/"
+  when: name == "master"
+
+- name: stop journalname
+  shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/hadoop-daemon.sh stop journalnode"

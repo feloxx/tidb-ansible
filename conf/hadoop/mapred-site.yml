@@ -1,0 +1,25 @@
+---
+
+mapred:
+
+  # 指定MapReduce计算框架使用YARN
+  # mapreduce.framework.name: "yarn"
+
+  # 指定jobhistory server的rpc地址
+  # mapreduce.jobhistory.address: "192.168.1.101:10020"
+
+  # 指定jobhistory server的http地址
+  # mapreduce.jobhistory.webapp.address: "192.168.1.101:19888"
+
+  # 开启uber模式，小作业优化
+  # mapreduce.job.ubertask.enable: true
+
+  # 配置uber模式最大map数
+  # mapreduce.job.ubertask.maxmaps: 16
+
+  # 配置uber模式最大reduce数
+  # mapreduce.job.ubertask.maxreduces: 4
+
+  # 一次shuffle所能消耗的内存限制的最大百分比
+  # Expert: Maximum percentage of the in-memory limit that a single shuffle can consume
+  # mapreduce.reduce.shuffle.memory.limit.percent: 0.13

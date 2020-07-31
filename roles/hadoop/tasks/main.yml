@@ -1,0 +1,90 @@
+---
+
+- name: load custom env
+  include_vars:
+    file={{ playbook_dir }}/conf/hadoop/hadoop-env.yml name=env_custom
+
+- name: load custom core
+  include_vars:
+    file={{ playbook_dir }}/conf/hadoop/core-site.yml name=core_custom
+
+- name: load custom hdfs
+  include_vars:
+    file={{ playbook_dir }}/conf/hadoop/hdfs-site.yml name=hdfs_custom
+
+- name: load custom mapred
+  include_vars:
+    file={{ playbook_dir }}/conf/hadoop/mapred-site.yml name=mapred_custom
+
+- name: load custom yarn
+  include_vars:
+    file={{ playbook_dir }}/conf/hadoop/yarn-site.yml name=yarn_custom
+
+- name: load default config
+  include_vars: file=default.yml name=conf_default
+
+- name: combine config
+  set_fact:
+    env_conf: "{{ {} | with_default_dicts(env_custom, conf_default) | update_default_dicts }}"
+    core_conf: "{{ {} | with_default_dicts(core_custom, conf_default) | update_default_dicts }}"
+    hdfs_conf: "{{ {} | with_default_dicts(hdfs_custom, conf_default) | update_default_dicts }}"
+    mapred_conf: "{{ {} | with_default_dicts(mapred_custom, conf_default) | update_default_dicts }}"
+    yarn_conf: "{{ {} | with_default_dicts(yarn_custom, conf_default) | update_default_dicts }}"
+
+- name: delete related folders
+  file: name={{ item }} state=absent
+  with_items:
+    - "{{ hadoop_dir }}"
+
+- name: create related folders
+  file: name={{ item }} state=directory mode=755
+  with_items:
+    - "{{ hadoop_dir }}"
+    - "{{ hadoop_dir }}/hdfs"
+    - "{{ hadoop_dir }}/hdfs/nn"
+    - "{{ hadoop_dir }}/hdfs/dn"
+    - "{{ hadoop_dir }}/journal"
+    - "{{ hadoop_dir }}/tmp"
+    - "{{ hadoop_dir }}/logs"
+
+- name: install
+  unarchive:
+    src={{ gz_dir }}/hadoop-{{ hadoop_version }}.tar.gz
+    dest={{ deploy_dir }}
+    mode=755
+
+- name: copy env script
+  lineinfile: dest="{{ conf_dir }}/hadoop-env.sh" state=present regexp={{ item.regexp }} line={{ item.line }}
+  with_items:
+    - { regexp: 'JAVA_HOME=', line: 'export JAVA_HOME="{{ env_conf.env.JAVA_HOME }}"' }
+    - { regexp: 'HADOOP_SSH_OPTS=', line: 'export HADOOP_SSH_OPTS="{{ env_conf.env.HADOOP_SSH_OPTS }}"' }
+
+- name: update hadoop-env.sh nn
+  shell: sed -i 'N;52a export HADOOP_NAMENODE_OPTS="{{ env_conf.env.HADOOP_NAMENODE_OPTS }}"' {{ conf_dir }}/hadoop-env.sh
+
+- name: update hadoop-env.sh dn
+  shell: sed -i 'N;54a export HADOOP_DATANODE_OPTS="{{ env_conf.env.HADOOP_DATANODE_OPTS }}"' {{ conf_dir }}/hadoop-env.sh
+
+- name: copy core-site.xml
+  template: src=core-site.xml.j2 dest={{ conf_dir }}/core-site.xml mode=755
+
+- name: copy hdfs-site.xml
+  template: src=hdfs-site.xml.j2 dest={{ conf_dir }}/hdfs-site.xml mode=755
+
+- name: copy mapred-site.xml
+  template: src=mapred-site.xml.j2 dest={{ conf_dir }}/mapred-site.xml mode=755
+
+- name: copy yarn-site.xml
+  template: src=yarn-site.xml.j2 dest={{ conf_dir }}/yarn-site.xml mode=755
+
+- name: copy slaves.j2
+  template: src=slaves.j2 dest={{ conf_dir }}/slaves mode=755
+
+- name: setting profile
+  become: yes
+  become_method: sudo
+  lineinfile: dest="/etc/profile" state=present regexp={{ item.regexp }} line={{ item.line }}
+  with_items:
+    - { regexp: 'HADOOP_HOME=', line: 'export HADOOP_HOME={{ hadoop_home }}' }
+    - { regexp: 'PATH=\$HADOOP_HOME', line: 'export PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH' }
+

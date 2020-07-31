@@ -1,0 +1,42 @@
+---
+
+- name: delete related folders
+  file: name={{ item }} state=absent
+  with_items:
+    - "{{ zookeeper_dir }}"
+    - "{{ zookeeper_data }}"
+    - "{{ zookeeper_log }}"
+
+- name: create related folders
+  file: name={{ item }} state=directory mode=755
+  with_items:
+    - "{{ zookeeper_dir }}"
+    - "{{ zookeeper_data }}"
+    - "{{ zookeeper_log }}"
+
+- name: install
+  unarchive:
+    src={{ gz_dir }}/zookeeper-{{ zookeeper_version }}.tar.gz
+    dest={{ deploy_dir }}
+    mode=755
+
+- name: add myid file
+  shell: "echo {{ myid }} > {{ zookeeper_data }}/myid"
+
+- name: copy zoo.cfg
+  template: src=zoo.cfg.j2 dest={{ zookeeper_dir }}/conf/zoo.cfg mode=755
+
+- name: specifying the log location
+  replace: dest={{ zookeeper_dir }}/bin/zkEnv.sh regexp='ZOO_LOG_DIR=\".\"' replace='ZOO_LOG_DIR=\"{{ zookeeper_log }}\"' backup=yes
+
+- name: setting profile
+  become: yes
+  become_method: sudo
+  lineinfile: dest="/etc/profile" state=present regexp={{ item.regexp }} line={{ item.line }}
+  with_items:
+    - { regexp: 'ZOOKEEPER_HOME=', line: 'export ZOOKEEPER_HOME={{ zookeeper_dir }}' }
+    - { regexp: 'PATH=\$ZOOKEEPER_HOME', line: 'export PATH=$ZOOKEEPER_HOME/bin:$PATH' }
+
+- name: source profile
+  shell: "source /etc/profile"
+

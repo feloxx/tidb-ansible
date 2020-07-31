@@ -64,3 +64,10 @@
   fail:
     msg: "It is not recommended to set vm.overcommit_memory to 2, set it to 0 or 1."
   when: vm_overcommit_memory.stdout | int == 2
+
+- name: change hostname
+  become: yes
+  become_method: sudo
+  shell: "echo {{ host_name }} > /etc/hostname"
+
+# TODO 以后来实现批量修改合并host

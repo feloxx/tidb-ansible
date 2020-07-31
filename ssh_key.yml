@@ -1,0 +1,30 @@
+---
+
+- name: fuck all ssh key
+  any_errors_fatal: true
+  hosts: all_servers
+  gather_facts: false
+  tasks:
+  - name: delete key
+    become: yes
+    become_method: sudo
+    shell: "rm -rf /tmp/ssh/*"
+
+#  - name: delete key
+#    file: path=/tmp/ssh/* state=absent
+
+  - name: SSH KeyGen command
+    tags: run
+    shell: >
+      ssh-keygen -q -b 2048 -t rsa -N "" -f /home/{{ ansible_user }}/.ssh/id_rsa
+      creates="/home/{{ ansible_user }}/.ssh/id_rsa"
+
+  - name: fetch key
+    fetch: src=/home/{{ ansible_user }}/.ssh/id_rsa.pub dest=/tmp/ssh/
+
+  - name: append file authorized_keys
+    shell: find /tmp/ssh/* -type f -exec sh -c 'cat {}>>/tmp/ssh/authorized_keys' \;
+    run_once: true
+
+  - name: copy authorized_keys
+    copy: src=/tmp/ssh/authorized_keys dest=/home/{{ ansible_user }}/.ssh/authorized_keys mode=0600

@@ -1,0 +1,7 @@
+{% for item, value in alert_conf.alert | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} = {{ value }}
+{% else %}
+{% endif %}
+{% endfor %}
+

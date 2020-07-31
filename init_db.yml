@@ -1,0 +1,9 @@
+---
+
+- name: init db
+  any_errors_fatal: true
+  hosts: tidb_servers[0]
+  tags:
+    - ds
+  roles:
+    - init_db

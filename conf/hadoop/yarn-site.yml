@@ -1,0 +1,79 @@
+---
+
+yarn:
+
+  # shuffle 模式
+  # yarn.nodemanager.aux-services: "mapreduce_shuffle,spark_shuffle"
+
+  # mr shuffle指定class
+  # yarn.nodemanager.aux-services.mapreduce_shuffle.class: org.apache.hadoop.mapred.ShuffleHandler
+
+  # spark shuffle指定class
+  # yarn.nodemanager.aux-services.spark_shuffle.class: org.apache.spark.network.yarn.YarnShuffleService
+
+  # yarn 代理地址
+  # yarn.web-proxy.address: "192.168.1.102:8888"
+
+  # 开启日志
+  # yarn.log-aggregation-enable: true
+
+  # 日志删除时间为7天，-1为禁用，单位为秒
+  # yarn.log-aggregation.retain-seconds: 604800
+
+  # 日志目录
+  # yarn.nodemanager.remote-app-log-dir: "/data1/bigdata/hadoop/hadoop-2.7.7/log"
+
+  # nodemanager可用的资源内存
+  # yarn.nodemanager.resource.memory-mb: 32768
+  # yarn.scheduler.maximum-allocation-mb: 16384
+  # yarn.app.mapreduce.am.resource.mb: 2048
+
+  # nodemanager可用的资源CPU
+  # yarn.nodemanager.resource.cpu-vcores: 4
+
+  # HA 相关配置
+  # related to HA
+
+  # 开启YARN HA
+  # open the yarn ha
+  # yarn.resourcemanager.ha.enabled: true
+
+  # 启用自动故障转移
+  # yarn.resourcemanager.ha.automatic-failover.enabled: true
+
+  # YARN HA的名称
+  # yarn.resourcemanager.cluster-id: "mycluster"
+
+  # 指定两个resourcemanager的名称
+  # yarn.resourcemanager.ha.rm-ids: "rm1,rm2"
+
+  # 配置rm1，rm2的主机
+  # yarn.resourcemanager.hostname.rm1: "192.168.1.101"
+  # yarn.resourcemanager.hostname.rm2: "192.168.1.102"
+
+  # 配置YARN的http端口
+  # yarn.resourcemanager.webapp.address.rm1: "192.168.1.101:8888"
+  # yarn.resourcemanager.webapp.address.rm2: "192.168.1.102:8888"
+
+  # 配置zookeeper的地址
+  # yarn.resourcemanager.zk-address: "192.168.1.101:2181,192.168.1.102:2181,192.168.1.103:2181"
+
+  # 配置zookeeper的存储位置
+  # yarn.resourcemanager.zk-state-store.parent-path: "/rmstore"
+
+  # 开启yarn resourcemanager restart
+  # yarn.resourcemanager.recovery.enabled: true
+
+  # 配置resourcemanager的状态存储到zookeeper中
+  # yarn.resourcemanager.store.class: "org.apache.hadoop.yarn.server.resourcemanager.recovery.ZKRMStateStore"
+
+  # 开启yarn nodemanager restart
+  # yarn.nodemanager.recovery.enabled: true
+
+  # 配置nodemanager IPC的通信端口
+  # yarn.nodemanager.address: "0.0.0.0:45454"
+
+  # 容器内存比例和检查
+  # yarn.nodemanager.pmem-check-enabled: false
+  # yarn.nodemanager.vmem-check-enabled: false
+  # yarn.nodemanager.vmem-pmem-ratio: 4

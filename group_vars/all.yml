@@ -14,6 +14,23 @@ fetch_dir:     "{{ playbook_dir }}/collect_diagnosis"
 cert_dir:      "{{ playbook_dir }}/conf/ssl"
 script_dir:    "{{ playbook_dir }}/scripts"
 binary_dir:    "{{ playbook_dir }}/resources/bin"
+gz_dir:        "{{ playbook_dir }}/resources/gz"
+
+# env
+env_dir:        "/data1/bigdata/env" # TODO hidden danger
+java_home:      "{{ env_dir }}/java/jdk-{{ java_version }}"
+scala_home:     "{{ env_dir }}/scala/scala-{{ scala_version }}"
+
+# bigdata
+bigdata_dir: "/data1/bigdata" # TODO hidden danger
+zookeeper_home: "{{ bigdata_dir }}/zookeeper/zookeeper-{{ zookeeper_version }}"
+hadoop_home: "{{ bigdata_dir }}/hadoop/hadoop-{{ hadoop_version }}"
+hive_home: "{{ bigdata_dir }}/hive/hive-{{ hive_version }}"
+spark_home: "{{ bigdata_dir }}/spark/spark-{{ spark_version }}"
+sqoop_home: "{{ bigdata_dir }}/sqoop/sqoop-{{ sqoop_version }}"
+
+ds_home: "{{ deploy_dir }}/ds-{{ ds_version }}"
+
 
 # default configuration for multiple host groups and roles
 node_exporter_port: 9100

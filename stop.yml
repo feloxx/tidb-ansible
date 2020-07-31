@@ -18,7 +18,8 @@
   hosts: localhost
   any_errors_fatal: true
   tags:
-    - always
+#    - always
+    - all_servers # TODO 方便调试
   roles:
     - check_config_static
 
@@ -26,7 +27,8 @@
   hosts: all
   any_errors_fatal: true
   tags:
-    - always
+#    - always
+    - all_servers # TODO 方便调试
   roles:
     - check_config_dynamic
 
@@ -305,3 +307,42 @@
         port: "{{ grafana_port }}"
         state: stopped
         msg: "the grafana port {{ grafana_port }} is not down"
+
+# The Playbook of BigData
+
+- name: zookeeper
+  gather_facts: false
+  any_errors_fatal: true
+  hosts: zookeeper_servers
+  tags:
+    - zookeeper
+  tasks:
+    - name: stop
+      shell: "source /etc/profile && sh {{ zookeeper_home }}/bin/zkServer.sh stop"
+
+- name: hadoop
+  gather_facts: false
+  any_errors_fatal: true
+  hosts: hadoop_servers
+  tags:
+    - hadoop
+  tasks:
+    - name: stop yarn history log on hadoop1
+      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/mr-jobhistory-daemon.sh stop historyserver"
+      when: name is defined and name == "master"
+
+    - name: stop yarn proxy on hadoop2
+      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/yarn-daemon.sh stop proxyserver"
+      when: name is defined and name == "slave"
+
+    - name: stop yarn bak service on hadoop1
+      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/yarn-daemon.sh stop resourcemanager"
+      when: name is defined and name == "master"
+
+    - name: stop yarn on hadoop2
+      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/stop-yarn.sh"
+      when: name is defined and name == "slave"
+
+    - name: stop hdfs on hadoop1
+      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/stop-dfs.sh"
+      when: name is defined and name == "master"

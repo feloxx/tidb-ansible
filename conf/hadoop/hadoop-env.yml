@@ -1,0 +1,10 @@
+---
+
+env:
+  # JAVA_HOME: "/data1/bigdata/env/java/jdk-1.8.0_261"
+
+  # HADOOP_SSH_OPTS: "22"
+
+  # HADOOP_NAMENODE_OPTS: "-XX:+UseG1GC -Xms4g -Xmx4g -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:{{ hadoop_home }}/logs/GC.log"
+
+  # HADOOP_DATANODE_OPTS: "-XX:+UseG1GC -Xmx2g"

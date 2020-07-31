@@ -1,0 +1,2 @@
+ds_dir: "{{ deploy_dir }}/ds-{{ ds_version }}"
+
