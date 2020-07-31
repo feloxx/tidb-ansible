@@ -1,0 +1,2 @@
+hadoop_dir: "{{ deploy_dir }}/hadoop-{{ hadoop_version }}"
+conf_dir: "{{ hadoop_dir }}/etc/hadoop/"

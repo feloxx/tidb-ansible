@@ -1,0 +1,96 @@
+---
+
+env:
+  JAVA_HOME: "{{ java_home }}"
+  HADOOP_SSH_OPTS: "-p {{ ansible_port }}"
+  HADOOP_NAMENODE_OPTS: "-XX:+UseG1GC -Xms8g -Xmx8g -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:{{ hadoop_home }}/logs/GC.log"
+  HADOOP_DATANODE_OPTS: "-XX:+UseG1GC -Xmx8g"
+
+core:
+  fs.defaultFS: "hdfs://{{ cluster_name }}"
+  hadoop.tmp.dir: "{{ hadoop_home }}/tmp"
+  fs.trash.interval: 0
+  ha.zookeeper.quorum: "{% for url in groups['zookeeper_servers'] %}{{ hostvars[url].ansible_host }}:2181{% if not loop.last %}{{','}}{% endif %}{% endfor %}"
+  ha.zookeeper.session-timeout.ms: 5000000
+  ha.failover-controller.cli-check.rpc-timeout.ms: 5000000
+  ipc.client.connect.timeout: 5000000
+  io.file.buffer.size: 131072
+
+hdfs:
+  dfs.namenode.name.dir: "{{ hadoop_home }}/hdfs/nn"
+  dfs.datanode.data.dir: "{{ hadoop_home }}/hdfs/dn"
+  dfs.replication: 3
+  dfs.permissions.enabled: "false"
+  dfs.webhdfs.enabled: "ture"
+  dfs.nameservices: "{{ cluster_name }}"
+  dfs.ha.namenodes: "{{ cluster_name }}"
+  dfs.ha.namenodes.mycluster: "nn1,nn2"
+
+  dfs.namenode.rpc-address.mycluster.nn1: "{{ groups['namenode_servers'][0] }}:8020"
+  dfs.namenode.rpc-address.mycluster.nn2: "{{ groups['namenode_servers'][1] }}:8020"
+  dfs.namenode.http-address.mycluster.nn1: "{{ groups['namenode_servers'][0] }}:50070"
+  dfs.namenode.http-address.mycluster.nn2: "{{ groups['namenode_servers'][1] }}:50070"
+
+  dfs.namenode.shared.edits.dir: "qjournal://{{ groups['namenode_servers'][0] }}:8485;{{ groups['namenode_servers'][1] }}:8485/mycluster"
+  dfs.journalnode.edits.dir: "{{ hadoop_home }}/journal"
+  dfs.client.failover.proxy.provider.mycluster: "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider"
+  dfs.ha.fencing.methods: "sshfence"
+  dfs.ha.fencing.ssh.private-key-files: "/home/{{ ansible_user }}/.ssh/id_rsa"
+  dfs.ha.automatic-failover.enabled: "true"
+
+  dfs.ha.fencing.ssh.connect-timeout: 30000
+  dfs.qjournal.start-segment.timeout.ms: 500000000
+  dfs.qjournal.prepare-recovery.timeout.ms: 500000000
+  dfs.qjournal.accept-recovery.timeout.ms: 500000000
+  dfs.qjournal.finalize-segment.timeout.ms: 500000000
+  dfs.qjournal.select-input-streams.timeout.ms: 500000000
+  dfs.qjournal.get-journal-state.timeout.ms: 500000000
+  dfs.qjournal.new-epoch.timeout.ms: 500000000
+  dfs.qjournal.write-txns.timeout.ms: 500000000
+  ha.zookeeper.session-timeout.ms: 500000000
+
+mapred:
+  mapreduce.framework.name: "yarn"
+  mapreduce.jobhistory.address: "{{ groups['namenode_servers'][0] }}:10020"
+  mapreduce.jobhistory.webapp.address: "{{ groups['namenode_servers'][0] }}:19888"
+
+  mapreduce.job.ubertask.enable: "true"
+  mapreduce.job.ubertask.maxmaps: 16
+  mapreduce.job.ubertask.maxreduces: 4
+  mapreduce.reduce.shuffle.memory.limit.percent: 0.13
+
+yarn:
+  yarn.nodemanager.aux-services: "mapreduce_shuffle,spark_shuffle"
+  yarn.nodemanager.aux-services.mapreduce_shuffle.class: "org.apache.hadoop.mapred.ShuffleHandler"
+  yarn.nodemanager.aux-services.spark_shuffle.class: "org.apache.spark.network.yarn.YarnShuffleService"
+  yarn.web-proxy.address: "{{ groups['namenode_servers'][1] }}:8888"
+
+  yarn.log-aggregation-enable: "true"
+  yarn.log-aggregation.retain-seconds: 604800
+  yarn.nodemanager.remote-app-log-dir: "{{ hadoop_home }}/log"
+
+  yarn.nodemanager.resource.memory-mb: 32768
+  yarn.scheduler.maximum-allocation-mb: 32768
+  yarn.app.mapreduce.am.resource.mb: 8192
+  yarn.nodemanager.resource.cpu-vcores: 16
+
+  yarn.resourcemanager.ha.enabled: "true"
+  yarn.resourcemanager.ha.automatic-failover.enabled: "true"
+  yarn.resourcemanager.cluster-id: "{{ cluster_name }}"
+
+  yarn.resourcemanager.ha.rm-ids: "rm1,rm2"
+  yarn.resourcemanager.hostname.rm1: "{{ groups['resourcemanager_servers'][0] }}"
+  yarn.resourcemanager.hostname.rm2: "{{ groups['resourcemanager_servers'][1] }}"
+  yarn.resourcemanager.webapp.address.rm1: "{{ groups['resourcemanager_servers'][0] }}:8888"
+  yarn.resourcemanager.webapp.address.rm2: "{{ groups['resourcemanager_servers'][1] }}:8888"
+
+  yarn.resourcemanager.zk-address: "{% for url in groups['zookeeper_servers'] %}{{ hostvars[url].ansible_host }}:2181{% if not loop.last %}{{','}}{% endif %}{% endfor %}"
+  yarn.resourcemanager.zk-state-store.parent-path: "/rmstore"
+  yarn.resourcemanager.recovery.enabled: "true"
+  yarn.resourcemanager.store.class: "org.apache.hadoop.yarn.server.resourcemanager.recovery.ZKRMStateStore"
+
+  yarn.nodemanager.recovery.enabled: "true"
+  yarn.nodemanager.address: "0.0.0.0:45454"
+  yarn.nodemanager.pmem-check-enabled: "false"
+  yarn.nodemanager.vmem-check-enabled: "false"
+  yarn.nodemanager.vmem-pmem-ratio: 4

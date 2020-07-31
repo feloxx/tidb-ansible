@@ -18,3 +18,6 @@
         line: '{{ username }} ALL=(ALL) NOPASSWD: ALL'
         regexp: '^{{ username }} .*'
         state: present
+
+    - name: close ssh check
+      shell: sed -i "s/^.*StrictHostKeyChecking.*$/   StrictHostKeyChecking no/g" /etc/ssh/ssh_config

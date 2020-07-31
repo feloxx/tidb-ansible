@@ -110,5 +110,3 @@
 - name: change daemon java home
   shell: sed -i 'N;3a export JAVA_HOME={{ java_home }}' {{ ds_dir }}/bin/dolphinscheduler-daemon.sh
 
-- name: change zk java home
-  shell: sed -i 'N;3a export JAVA_HOME={{ java_home }}' {{ ds_dir }}/script/remove-zk-node.sh

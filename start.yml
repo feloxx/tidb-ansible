@@ -18,7 +18,8 @@
   hosts: localhost
   any_errors_fatal: true
   tags:
-    - always
+#    - always
+    - all_servers # TODO 方便调试
   roles:
     - check_config_static
 
@@ -26,7 +27,8 @@
   hosts: all
   any_errors_fatal: true
   tags:
-    - always
+#    - always
+    - all_servers # TODO 方便调试
   roles:
     - check_config_dynamic
 
@@ -501,14 +503,53 @@
     - zookeeper
   tasks:
     - name: start
-      shell: "source /etc/profile && sh {{ zookeeper_dir }}/bin/zkServer.sh start"
+      shell: "source /etc/profile && sh {{ zookeeper_home }}/bin/zkServer.sh start"
 
-- name: ds
+- name: deploying hadoop init
+  any_errors_fatal: true
+  hosts: namenode_servers
+  tags:
+    - init_hadoop
+  roles:
+    - init_hadoop
+
+- name: hadoop
   gather_facts: false
   any_errors_fatal: true
-  hosts: ds_api_log_alert
+  hosts: hadoop_servers
   tags:
-    - ds
+    - hadoop
   tasks:
-    - name: start
-      shell: "source /etc/profile && sh {{ ds_dir }}/bin/start-all.sh"
+#    - name: format zkfc before starting
+#      shell: "source /etc/profile && sh {{ hadoop_home }}/bin/hdfs zkfc -formatZK"
+#      when: name is defined and name == "master"
+
+    - name: start hdfs on hadoop1
+      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/start-dfs.sh"
+      when: name is defined and name == "master"
+
+    - name: start yarn on hadoop2
+      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/start-yarn.sh"
+      when: name is defined and name == "slave"
+
+    - name: start yarn bak service on hadoop1
+      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/yarn-daemon.sh start resourcemanager"
+      when: name is defined and name == "master"
+
+    - name: start yarn proxy on hadoop2
+      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/yarn-daemon.sh start proxyserver"
+      when: name is defined and name == "slave"
+
+    - name: start yarn history log on hadoop1
+      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/mr-jobhistory-daemon.sh start historyserver"
+      when: name is defined and name == "master"
+
+#- name: ds
+#  gather_facts: false
+#  any_errors_fatal: true
+#  hosts: ds_api_log_alert
+#  tags:
+#    - ds
+#  tasks:
+#    - name: start
+#      shell: "source /etc/profile && sh {{ ds_home }}/bin/start-all.sh"

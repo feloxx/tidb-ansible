@@ -1,0 +1,28 @@
+---
+
+core:
+
+  # 指定hdfs的nameservices名称，与hdfs-site.xml的HA配置相同:
+  # specify the nameservices name of HDFS
+  # fs.defaultFS: "hdfs://mycluster"
+
+  # 指定临时文件存储的路径
+  # tmp path
+  # hadoop.tmp.dir: "/data1/bigdata/hadoop/hadoop2.7.7/tmp"
+
+  # 配置hdfs文件被永久删除前保留的时间（单位：分钟），默认值为0表明垃圾回收站功能关闭
+  # the recycle bin
+  # fs.trash.interval: 0
+
+  # 指定zookeeper地址，配置HA时需要
+  # zookeeper path
+  # ha.zookeeper.quorum: "192.168.1.101:2181,192.168.1.102:2181,192.168.1.103:2181"
+
+  # 网络不好的时候使用以下配置
+  # use the following configuration when the network is not working
+  # ha.zookeeper.session-timeout.ms: 5000000
+  # ha.failover-controller.cli-check.rpc-timeout.ms: 5000000
+  # ipc.client.connect.timeout: 5000000
+
+  # 顺序文件的缓冲区的大小
+  # io.file.buffer.size: 131072
