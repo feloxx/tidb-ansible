@@ -294,7 +294,7 @@
       delay: 5
       when: enable_tls|default(false)
 
-    - command: cat {{ deploy_dir }}/status/tikv.pid
+    - command: cat {{ root_dir }}/status/tikv.pid
       register: new_tikv_pid
       ignore_errors: yes
       changed_when: false
@@ -505,13 +505,23 @@
     - name: start
       shell: "source /etc/profile && sh {{ zookeeper_home }}/bin/zkServer.sh start"
 
+- name: hadoop initialization was successful
+  ignore_errors: True
+  hosts: namenode_servers[0]
+  tags:
+    - init_hadoop
+  tasks:
+    - name:
+      shell: "cat {{ root_dir }}/status/init_hadoop.ok"
+      register: check_init_hadoop
+
 - name: deploying hadoop init
   any_errors_fatal: true
   hosts: namenode_servers
   tags:
     - init_hadoop
   roles:
-    - init_hadoop
+    - { role: init_hadoop, when: "hostvars[groups.namenode_servers[0]].check_init_hadoop != 'ok'" }
 
 - name: hadoop
   gather_facts: false
@@ -520,29 +530,25 @@
   tags:
     - hadoop
   tasks:
-#    - name: format zkfc before starting
-#      shell: "source /etc/profile && sh {{ hadoop_home }}/bin/hdfs zkfc -formatZK"
-#      when: name is defined and name == "master"
-
     - name: start hdfs on hadoop1
       shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/start-dfs.sh"
       when: name is defined and name == "master"
 
     - name: start yarn on hadoop2
       shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/start-yarn.sh"
-      when: name is defined and name == "slave"
+      when: name is defined and name == "master"
 
     - name: start yarn bak service on hadoop1
       shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/yarn-daemon.sh start resourcemanager"
-      when: name is defined and name == "master"
+      when: name is defined and name == "slave"
 
     - name: start yarn proxy on hadoop2
       shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/yarn-daemon.sh start proxyserver"
-      when: name is defined and name == "slave"
+      when: name is defined and name == "master"
 
     - name: start yarn history log on hadoop1
       shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/mr-jobhistory-daemon.sh start historyserver"
-      when: name is defined and name == "master"
+      when: name is defined and name == "slave"
 
 #- name: ds
 #  gather_facts: false

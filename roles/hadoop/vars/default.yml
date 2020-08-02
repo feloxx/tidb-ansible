@@ -60,9 +60,10 @@ mapred:
   mapreduce.reduce.shuffle.memory.limit.percent: 0.13
 
 yarn:
-  yarn.nodemanager.aux-services: "mapreduce_shuffle,spark_shuffle"
+  yarn.nodemanager.aux-services: "mapreduce_shuffle"
+  #yarn.nodemanager.aux-services: "mapreduce_shuffle,spark_shuffle"
   yarn.nodemanager.aux-services.mapreduce_shuffle.class: "org.apache.hadoop.mapred.ShuffleHandler"
-  yarn.nodemanager.aux-services.spark_shuffle.class: "org.apache.spark.network.yarn.YarnShuffleService"
+  #yarn.nodemanager.aux-services.spark_shuffle.class: "org.apache.spark.network.yarn.YarnShuffleService"
   yarn.web-proxy.address: "{{ groups['namenode_servers'][1] }}:8888"
 
   yarn.log-aggregation-enable: "true"

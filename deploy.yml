@@ -25,7 +25,7 @@
     - main
   tasks:
     - name: mkdir
-      file: name={{ deploy_dir }} state=directory owner={{ deploy_user }} group={{ deploy_user }} mode=755
+      file: name={{ root_dir }} state=directory owner={{ deploy_user }} group={{ deploy_user }} mode=755
 
 # The Playbook of TiDB
 
@@ -203,8 +203,6 @@
 # The Playbook of BigData
 
 - name: deploying java
-  become: yes
-  become_method: sudo
   any_errors_fatal: true
   hosts: all_servers
   tags:
@@ -213,8 +211,6 @@
     - java
 
 - name: deploying scala
-  become: yes
-  become_method: sudo
   any_errors_fatal: true
   hosts: all_servers
   tags:

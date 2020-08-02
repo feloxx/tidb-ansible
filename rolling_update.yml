@@ -318,7 +318,7 @@
         state: stopped
         msg: "the TiKV port {{ tikv_port }} is not down"
 
-    - command: cat {{ deploy_dir }}/status/tikv.pid
+    - command: cat {{ root_dir }}/status/tikv.pid
       register: old_tikv_pid
       ignore_errors: yes
       changed_when: false
@@ -370,7 +370,7 @@
       delay: 5
       when: enable_tls|default(false)
 
-    - command: cat {{ deploy_dir }}/status/tikv.pid
+    - command: cat {{ root_dir }}/status/tikv.pid
       register: new_tikv_pid
       ignore_errors: yes
       changed_when: false

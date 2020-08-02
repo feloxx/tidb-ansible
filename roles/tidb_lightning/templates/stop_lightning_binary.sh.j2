@@ -12,6 +12,6 @@ stat=$(time sync)
 echo ok
 echo $stat
 
-if [ `ps aux |grep tidb-lightning |grep $(cat status/tidb-lightning.pid) |wc -l` -eq 1 ];then
-	kill `cat status/tidb-lightning.pid`
+if [ `ps aux |grep tidb-lightning |grep $(cat {{ root_dir }}/status/tidb-lightning.pid) |wc -l` -eq 1 ];then
+	kill `cat {{ root_dir }}/status/tidb-lightning.pid`
 fi

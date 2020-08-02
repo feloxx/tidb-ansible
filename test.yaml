@@ -1,0 +1,10 @@
+---
+- name: test
+  hosts: all_servers[0]
+  ignore_errors: True
+  tasks:
+    - name: test
+    - shell: "echo ok"
+
+
+

@@ -1,11 +1,11 @@
 #!/usr/bin/expect
 
 set localFile  "."
-set remoteDir  "/home/tidb/tidb-ansible-v3.0.15-cdpmagic"
-set remoteIp   "172.28.30.28"
-set remotePort "11822"
-set remoteUser "tidb"
-set remotePwd  "hwsqj110"
+set remoteDir  "$1"
+set remoteIp   "$2"
+set remotePort "$3"
+set remoteUser "$4"
+set remotePwd  "$5"
 
 set timeout 3600
 

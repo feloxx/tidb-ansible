@@ -15,4 +15,4 @@ echo $stat
 
 nohup ./bin/tidb-lightning -config ./conf/tidb-lightning.toml &> log/tidb_lightning_stderr.log &
 
-echo $! > "status/tidb-lightning.pid"
+echo $! > "{{ root_dir }}/status/tidb-lightning.pid"
