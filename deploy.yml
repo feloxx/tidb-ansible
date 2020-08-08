@@ -234,13 +234,13 @@
   roles:
     - hadoop
 
-#- name: deploying hive
-#  any_errors_fatal: true
-#  hosts: hive_servers
-#  tags:
-#    - hive
-#  roles:
-#    - hive
+- name: deploying hive
+  any_errors_fatal: true
+  hosts: hive_servers
+  tags:
+    - hive
+  roles:
+    - hive
 #
 #- name: deploying spark
 #  any_errors_fatal: true

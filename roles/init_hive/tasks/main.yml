@@ -1,0 +1,19 @@
+---
+
+- name: mkdir warehouse
+  shell: "source /etc/profile && {{ hadoop_home }}/bin/hdfs dfs -mkdir -p /user/hive/warehouse"
+
+- name: chmod warehouse
+  shell: "source /etc/profile && {{ hadoop_home }}/bin/hdfs dfs -chmod -R 777 /user/hive/warehouse"
+
+- name: mkdir tmp
+  shell: "source /etc/profile && {{ hadoop_home }}/bin/hdfs dfs -mkdir -p /tmp/hive"
+
+- name: chmod tmp
+  shell: "source /etc/profile && {{ hadoop_home }}/bin/hdfs dfs -chmod -R 777 /tmp/hive"
+
+- name: init schema
+  shell: "source /etc/profile && schematool -dbType mysql -initSchema"
+
+- name: init successfully
+  shell: "echo 'ok' >  {{ root_dir }}/status/init_hive.ok"
