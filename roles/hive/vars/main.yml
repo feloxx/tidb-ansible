@@ -1,0 +1,2 @@
+hive_dir: "{{ deploy_dir }}/hive-{{ hive_version }}"
+conf_dir: "{{ hive_dir }}/conf"

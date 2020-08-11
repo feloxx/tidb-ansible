@@ -1,0 +1,2 @@
+sqoop_dir: "{{ deploy_dir }}/sqoop-{{ sqoop_version }}"
+conf_dir: "{{ sqoop_dir }}/conf"

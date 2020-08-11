@@ -1,13 +1,14 @@
 ---
 
-# zk needs to be with the namenode
-# TODO hidden trouble
+# TODO HIDDEN TROUBLE  是否需要去zk里再删除一次呢?
 - name: check zookeeper
   shell: ps -ef | grep QuorumPeerMain | grep -v grep | wc -l
   register: check_zookeeper
-- name: clean ds zookeeper node
+- name: clean hdfs zookeeper node
   shell: "source /etc/profile && {{ zookeeper_home }}/bin/zkCli.sh -server {% for url in groups['zookeeper_servers'] %}{{ hostvars[url].ansible_host }}:2181{% if not loop.last %}{{','}}{% endif %}{% endfor %} rmr /hadoop-ha"
   when: check_zookeeper.stdout | int > 0 and name == "master"
+- name: clean hdfs file
+  shell: "rm -rf {{ hadoop_home }}/hdfs/nn/* && rm -rf {{ hadoop_home }}/hdfs/dn/* && rm -rf {{ hadoop_home }}/journal/*"
 
 - name: format zkfc
   shell: "source /etc/profile && sh {{ hadoop_home }}/bin/hdfs zkfc -formatZK"
@@ -26,3 +27,7 @@
 
 - name: stop journalname
   shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/hadoop-daemon.sh stop journalnode"
+
+- name: init successfully
+  shell: "echo 'ok' >  {{ root_dir }}/status/init_hadoop.ok"
+  when: name == "master"

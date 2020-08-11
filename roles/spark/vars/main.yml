@@ -1,0 +1,2 @@
+spark_dir: "{{ deploy_dir }}/spark-{{ spark_version }}"
+conf_dir: "{{ spark_dir }}/conf"

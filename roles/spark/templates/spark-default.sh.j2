@@ -1,0 +1,6 @@
+{% for item, value in spark_conf.spark | dictsort_by_value_type %}
+{% if value is not mapping -%}
+{{ item }}    {{ value }}
+{% else %}
+{% endif %}
+{% endfor %}

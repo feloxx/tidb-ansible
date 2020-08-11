@@ -4,7 +4,7 @@
 - name: create supervise status directory
   file: path={{ item }} state=directory mode=0755
   with_items:
-  - "{{ deploy_dir }}/status/{{ this_role_name }}"
+  - "{{ root_dir }}/status/{{ this_role_name }}"
 
 - name: deploy supervise binary
   copy: src="{{ resources_dir }}/bin/{{ item }}" dest="{{ deploy_dir }}/bin/" mode=0755
@@ -22,4 +22,4 @@
     - start
     - stop
   vars:
-    role_status_dir: status/{{ this_role_name }}
+    role_status_dir: {{ root_dir }}/status/{{ this_role_name }}

@@ -1,2 +1,63 @@
 ---
 
+- name: load site
+  include_vars:
+    file={{ playbook_dir }}/conf/hive/hive-site.yml name=hive_custom
+
+- name: load default config
+  include_vars: file=default.yml name=conf_default
+
+- name: combine config
+  set_fact:
+    hive_conf: "{{ {} | with_default_dicts(hive_custom, conf_default) | update_default_dicts }}"
+
+- name: delete related folders
+  file: name={{ item }} state=absent
+  with_items:
+    - "{{ hive_dir }}"
+
+- name: create related folders
+  file: name={{ item }} state=directory mode=755
+  with_items:
+    - "{{ hive_dir }}"
+    - "{{ hive_dir }}/tmp"
+    - "{{ hive_dir }}/logs"
+
+- name: install
+  unarchive:
+    src={{ gz_dir }}/hive-{{ hive_version }}.tar.gz
+    dest={{ deploy_dir }}
+    mode=755
+
+- name: rename hive env
+  shell: "cp -rf {{ conf_dir }}/hive-env.sh.template {{ conf_dir }}/hive-env.sh"
+
+- name: change hive env
+  lineinfile: dest="{{ conf_dir }}/hive-env.sh" state=present regexp={{ item.regexp }} line={{ item.line }}
+  with_items:
+    - { regexp: 'HADOOP_HOME=', line: 'export HADOOP_HOME="{{ hadoop_home }}"' }
+    - { regexp: 'HIVE_CONF_DIR=', line: 'export HIVE_CONF_DIR="{{ conf_dir }}"' }
+
+- name: rename hive log4j
+  shell: "cp -rf {{ conf_dir }}/hive-log4j2.properties.template {{ conf_dir }}/hive-log4j2.properties"
+
+- name: change hive log4j
+  lineinfile: dest="{{ conf_dir }}/hive-log4j2.properties" state=present regexp={{ item.regexp }} line={{ item.line }}
+  with_items:
+    - { regexp: 'property\.hive\.log\.dir=', line: 'property.hive.log.dir = {{ hive_dir }}/logs/${sys:user.name}' }
+
+- name: copy hive-site.xml
+  template: src=hive-site.xml.j2 dest={{ conf_dir }}/hive-site.xml mode=755
+
+- name: copy mysql client
+  copy:
+    src="{{ gz_dir }}/mysql-connector-java-5.1.48.jar"
+    dest={{ hive_dir }}/lib/mysql-connector-java-5.1.48.jar
+
+- name: setting profile
+  become: yes
+  become_method: sudo
+  lineinfile: dest="/etc/profile" state=present regexp={{ item.regexp }} line={{ item.line }}
+  with_items:
+    - { regexp: 'HIVE_HOME=', line: 'export HIVE_HOME={{ hive_home }}' }
+    - { regexp: 'PATH=\$HIVE_HOME', line: 'export PATH=$HIVE_HOME/bin:$PATH' }

@@ -1,0 +1,17 @@
+---
+
+hive:
+  # javax.jdo.option.ConnectionUserName: "hive"
+  # javax.jdo.option.ConnectionPassword: "hive"
+  javax.jdo.option.ConnectionURL: "jdbc:mysql://172.28.30.28:3306/metastore?createDatabaseIfNotExist=true&amp;characterEncoding=utf-8&amp;useSSL=false"
+  # javax.jdo.option.ConnectionDriverName: "com.mysql.jdbc.Driver"
+
+  # hive.metastore.warehouse.dir: "/user/hive/warehouse"
+  # hive.exec.scratchdir: "/tmp/hive"
+  # hive.exec.local.scratchdir: "/data1/bigdata/hive/hive-2.3.7/tmp/local"
+  # hive.downloaded.resources.dir: "/data1/bigdata/hive/hive-2.3.7/tmp/${hive.session.id}_resources"
+  # hive.querylog.location: "/data1/bigdata/hive/hive-2.3.7/tmp/querylog"
+  # hive.server2.logging.operation.log.location: "/data1/bigdata/hive/hive-2.3.7/tmp/operation_logs"
+
+  # hive.metastore.uris: "thrift://127.0.0.1:9083"
+  # hive.metastore.local: "false"

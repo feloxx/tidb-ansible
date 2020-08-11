@@ -1,2 +1,33 @@
 ---
 
+# sqoop包，已经做好了以下三步，所以只需解压然后再修改下env即可
+# 加入了jdbc包
+# 加入了avro包
+# 修改了启动的检测报错
+
+- name: delete related folders
+  file: name={{ item }} state=absent
+  with_items:
+    - "{{ sqoop_dir }}"
+
+- name: create related folders
+  file: name={{ item }} state=directory mode=755
+  with_items:
+    - "{{ sqoop_dir }}"
+
+- name: install
+  unarchive:
+    src={{ gz_dir }}/sqoop-{{ sqoop_version }}.tar.gz
+    dest={{ deploy_dir }}
+    mode=755
+
+- name: copy sqoop-env.sh
+  template: src=sqoop-env.sh.j2 dest={{ conf_dir }}/sqoop-env.sh mode=755
+
+- name: setting profile
+  become: yes
+  become_method: sudo
+  lineinfile: dest="/etc/profile" state=present regexp={{ item.regexp }} line={{ item.line }}
+  with_items:
+    - { regexp: 'SQOOP_HOME=', line: 'export SQOOP_HOME={{ sqoop_home }}' }
+    - { regexp: 'PATH=\$SQOOP_HOME', line: 'export PATH=$SQOOP_HOME/bin:$PATH' }

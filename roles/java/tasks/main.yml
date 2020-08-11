@@ -10,6 +10,8 @@
     mode=755
 
 - name: setting profile
+  become: yes
+  become_method: sudo
   lineinfile: dest=/etc/profile state=present regexp={{ item.regexp }} line={{ item.line }}
   with_items:
     - { regexp: 'JAVA_HOME=', line: 'export JAVA_HOME={{ java_home }}' }

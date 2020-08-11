@@ -1,0 +1,24 @@
+---
+
+spark:
+  # spark.master: "yarn"
+  # spark.driver.memory: "4g"
+  # spark.executor.memory: "4g"
+  # spark.executor.memoryOverhead: "4g"
+  # spark.driver.maxResultSize: "12g"
+  # spark.debug.maxToStringFields: 200
+  # spark.eventLog.enabled: "true"
+  # spark.eventLog.dir: "hdfs:///user/spark/history/job_history_log"
+  # spark.eventLog.compress: "true"
+  # spark.shuffle.service.enabled: "true"
+  # spark.shuffle.service.port: 7337
+  # spark.dynamicAllocation.enabled: "true"
+  # spark.dynamicAllocation.minExecutors: 3
+  # spark.dynamicAllocation.maxExecutors: 70
+  # spark.port.maxRetries: 100
+  # spark.driver.extraLibraryPath: "/data1/spark-2.4.4/jars/*"
+  # spark.driver.extraClassPath: "/data1/spark-2.4.4/jars/*"
+  # spark.executor.extraLibraryPath: "/data1/spark-2.4.4/jars/*"
+  # spark.executor.extraClassPath: "/data1/spark-2.4.4/jars/*"
+  # spark.file: "file:///data1/spark-2.4.4/conf/hdfs-site.xml,file:///data1/spark-2.4.4/conf/core-site.xml"
+  # spark.yarn.archive: "hdfs:///spark/jar/spark-libs.jar"

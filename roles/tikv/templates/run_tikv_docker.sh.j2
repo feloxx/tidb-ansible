@@ -25,7 +25,7 @@ stat=$(time sync)
 echo ok
 echo $stat
 
-echo $$ > "status/{{ role_name }}.pid"
+echo $$ > "{{ root_dir }}/status/{{ role_name }}.pid"
 
 exec docker run \
   -p {{ tikv_port }}:20160 \

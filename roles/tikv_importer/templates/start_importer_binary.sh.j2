@@ -15,4 +15,4 @@ echo $stat
 
 nohup ./bin/tikv-importer -C ./conf/tikv-importer.toml &> log/tikv_importer_stderr.log &
 
-echo $! > "status/tikv-importer.pid"
+echo $! > "{{ root_dir }}/status/tikv-importer.pid"

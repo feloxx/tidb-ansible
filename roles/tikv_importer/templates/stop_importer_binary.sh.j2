@@ -12,6 +12,6 @@ stat=$(time sync)
 echo ok
 echo $stat
 
-if [ `ps aux |grep tikv-importer |grep $(cat status/tikv-importer.pid) |wc -l` -eq 1 ];then
-        kill `cat status/tikv-importer.pid`
+if [ `ps aux |grep tikv-importer |grep $(cat {{ root_dir }}/status/tikv-importer.pid) |wc -l` -eq 1 ];then
+        kill `cat {{ root_dir }}/status/tikv-importer.pid`
 fi
