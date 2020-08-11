@@ -241,23 +241,23 @@
     - hive
   roles:
     - hive
-#
-#- name: deploying spark
-#  any_errors_fatal: true
-#  hosts: spark_servers
-#  tags:
-#    - spark
-#  roles:
-#    - spark
-#
-#- name: deploying sqoop
-#  any_errors_fatal: true
-#  hosts: sqoop_servers
-#  tags:
-#    - sqoop
-#  roles:
-#    - sqoop
-#
+
+- name: deploying spark
+  any_errors_fatal: true
+  hosts: spark_servers
+  tags:
+    - spark
+  roles:
+    - spark
+
+- name: deploying sqoop
+  any_errors_fatal: true
+  hosts: sqoop_servers
+  tags:
+    - sqoop
+  roles:
+    - sqoop
+
 #- name: deploying ds
 #  any_errors_fatal: true
 #  hosts: ds_servers

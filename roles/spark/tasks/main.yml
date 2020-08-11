@@ -1,2 +1,83 @@
 ---
 
+- name: load site
+  include_vars:
+    file={{ playbook_dir }}/conf/spark/spark-default.yml name=spark_custom
+
+- name: load default config
+  include_vars: file=default.yml name=conf_default
+
+- name: combine config
+  set_fact:
+    spark_conf: "{{ {} | with_default_dicts(spark_custom, conf_default) | update_default_dicts }}"
+
+- name: delete related folders
+  file: name={{ item }} state=absent
+  with_items:
+    - "{{ spark_dir }}"
+
+- name: create related folders
+  file: name={{ item }} state=directory mode=755
+  with_items:
+    - "{{ spark_dir }}"
+
+- name: install
+  unarchive:
+    src={{ gz_dir }}/spark-{{ spark_version }}.tar.gz
+    dest={{ deploy_dir }}
+    mode=755
+
+- name: copy spark-default.sh
+  template: src=spark-default.sh.j2 dest={{ conf_dir }}/spark-default.sh mode=755
+
+- name: copy spark-env.sh
+  template: src=spark-env.sh.j2 dest={{ conf_dir }}/spark-env.sh mode=755
+
+
+# copy core hdfs hive
+- name: fetch core
+  fetch:
+    src: "{{ hadoop_home }}/etc/hadoop/core-site.xml"
+    dest: "{{ conf_dir }}/core-site.xml"
+    flat: yes
+
+- name: fetch hdfs
+  fetch:
+    src: "{{ hadoop_home }}/etc/hadoop/hdfs-site.xml"
+    dest: "{{ conf_dir }}/hdfs-site.xml"
+    flat: yes
+
+- name: fetch hive
+  fetch:
+    src: "{{ hive_home }}/conf/hive-site.xml"
+    dest: "{{ conf_dir }}/hive-site.xml"
+    flat: yes
+
+- name: del spark jar folder
+  ignore_errors: True
+  shell: "source /etc/profile && {{ hadoop_home }}/bin/hdfs dfs -rm -r /spark/jar"
+
+- name: create spark jar folder
+  shell: "source /etc/profile && {{ hadoop_home }}/bin/hdfs dfs -mkdir -p /spark/jar"
+
+- name: jar cv0f
+  shell: "source /etc/profile && cd {{ spark_dir }} && jar cv0f spark-libs.jar -C $SPARK_HOME/jars/ ."
+
+- name: put jar
+  shell: "source /etc/profile && {{ hadoop_home }}/bin/hdfs dfs -put {{ spark_dir }}/spark-libs.jar /spark/jar"
+
+# 获得inventory中的变量，然后遍历
+- name: scp shuffle jar
+  shell: "scp -r -P {{ ansible_port|default(22) }} {{ spark_home }}/yarn/spark-2.4.4-yarn-shuffle.jar {{ ansible_user }}@{{ hostvars[item].ansible_host }}:/{{ hadoop_home }}/share/hadoop/yarn/lib/"
+  with_items:
+    - "{{ groups['hadoop_servers'] }}"
+  run_once: true
+
+- name: setting profile
+  become: yes
+  become_method: sudo
+  lineinfile: dest="/etc/profile" state=present regexp={{ item.regexp }} line={{ item.line }}
+  with_items:
+    - { regexp: 'SPARK_HOME=', line: 'export SPARK_HOME={{ spark_home }}' }
+    - { regexp: 'PATH=\$SPARK_HOME', line: 'export PATH=$SPARK_HOME/bin:$PATH' }
+
