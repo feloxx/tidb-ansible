@@ -21,7 +21,7 @@
     - check_config_static
 
 - name: check node config
-  hosts: all
+  hosts: all_servers
   gather_facts: false
   become: true
   roles:

@@ -26,15 +26,19 @@ zookeeper_home: "{{ root_dir }}/zookeeper/zookeeper-{{ zookeeper_version }}"
 hadoop_home: "{{ root_dir }}/hadoop/hadoop-{{ hadoop_version }}"
 hive_home: "{{ root_dir }}/hive/hive-{{ hive_version }}"
 spark_home: "{{ root_dir }}/spark/spark-{{ spark_version }}"
+presto_home: "{{ root_dir }}/presto/presto-{{ presto_version }}"
 sqoop_home: "{{ root_dir }}/sqoop/sqoop-{{ sqoop_version }}"
 
 ds_home: "{{ root_dir }}/ds/ds-{{ ds_version }}"
 
+mysql_home: "{{ root_dir }}/mysql/mysql-{{ mysql_version }}-linux-glibc2.12-x86_64"
+redis_home: "{{ root_dir }}/redis/redis-{{ redis_version }}"
 
 # default configuration for multiple host groups and roles
 node_exporter_port: 9100
 blackbox_exporter_port: 9115
 kafka_exporter_port: 9308
+redis_exporter_port: 9121
 
 # docker
 docker_bin_dir: "/usr/bin"

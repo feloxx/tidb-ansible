@@ -1,0 +1,23 @@
+---
+
+redis:
+  bind: "{{ ansible_host }}"
+  port: 6379
+  loglevel: "notice"
+  logfile: "{{ log_dir }}/redis.log"
+  dir: "{{ data_dir }}"
+  daemonize: "yes"
+  protected-mode: "yes"
+  pidfile: "/var/run/redis.pid"
+
+sentinel:
+  bind: "{{ ansible_host }}"
+  port: 26379
+  daemonize: "yes"
+  logfile: "{{ log_dir }}/sentinel.log"
+  dir: "{{ data_dir }}"
+  pidfile: "/var/run/redis-sentinel.pid"
+
+  sentinel down-after-milliseconds mymaster: 30000
+  sentinel parallel-syncs mymaster: 1
+  sentinel failover-timeout mymaster: 180000

@@ -1,0 +1,55 @@
+# The Playbook of Cloudera
+
+# required package
+- name: deploy cloudera required prepare package
+  become: yes
+  become_method: sudo
+  gather_facts: false
+  any_errors_fatal: true
+  hosts: all_servers
+  tags:
+    - cloudera-pre
+  tasks:
+    - name: install
+      yum:
+        name:
+          - chkconfig
+          - bind-utils
+          - psmisc
+          - libxslt
+          - zlib
+          - sqlite
+          - cyrus-sasl-plain
+          - cyrus-sasl-gssapi
+          - fuse
+          - fuse-libs
+          - redhat-lsb
+          - portmap
+          - mod_ssl
+          - openssl
+          - openssl-devel
+          - python-psycopg2
+          - MySQL-python
+          - python-devel
+          - telnet
+          - pcre-devel
+          - gcc
+          - gcc-c++
+          - httpd
+          - yum-utils
+          - createrepo
+        state: latest
+      async: 90
+
+
+#- name: create repo
+# http://192.167.8.171/cloudera/cdh/
+# http://192.167.8.171/cloudera/cm/
+
+#- name: jdbc link
+
+- name: install jdk
+
+#  export JAVA_HOME=/usr/java/jdk1.8.0_181-cloudera
+#  export PATH=$JAVA_HOME/bin:$PATH
+#  export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar

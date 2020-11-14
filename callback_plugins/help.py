@@ -37,14 +37,6 @@ class CallbackModule(CallbackBase):
         self.handler = logging.FileHandler(FAIL_LOGFILE)
         self.logger.addHandler(self.handler)
 
-    def print_help_message(self):
-        self._display.display("+--------------------------+",color=C.COLOR_HIGHLIGHT)
-        self._display.display("| My name is chendapao     |", color=C.COLOR_HIGHLIGHT)
-        self._display.display("| If you have a problem    |", color=C.COLOR_HIGHLIGHT)
-        self._display.display("| This is my QQ: 124270686 |", color=C.COLOR_HIGHLIGHT)
-        self._display.display("+--------------------------+\n",color=C.COLOR_HIGHLIGHT)
-
-
     def v2_runner_on_failed(self, result, ignore_errors=False):
         if not ignore_errors:
             # self.print_help_message()

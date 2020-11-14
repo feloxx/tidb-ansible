@@ -1,0 +1,21 @@
+---
+
+coordinator:
+  coordinator: true
+  node-scheduler.include-coordinator: false
+  http-server.http.port: 8089
+  query.max-memory: "4GB"
+  query.max-memory-per-node: "1GB"
+  discovery-server.enabled: true
+  discovery.uri: "http://{% for item in groups['presto_servers'] %}{% if hostvars[item].name == 'coordinator' %}{{ hostvars[item].ansible_host }}{% endif %}{% endfor %}:8089"
+
+worker:
+  coordinator: false
+  http-server.http.port: 8089
+  query.max-memory: "4GB"
+  query.max-memory-per-node: "1GB"
+  discovery.uri: "http://{% for item in groups['presto_servers'] %}{% if hostvars[item].name == 'coordinator' %}{{ hostvars[item].ansible_host }}{% endif %}{% endfor %}:8089"
+
+log:
+  com.facebook.presto: "INFO"
+
