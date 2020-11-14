@@ -1,0 +1,8 @@
+---
+
+- name: deploy supervise
+  include_role:
+    name: supervise
+  vars:
+    this_role_name: redis_exporter
+    service_name: redis_exporter-{{ redis_exporter_port }}

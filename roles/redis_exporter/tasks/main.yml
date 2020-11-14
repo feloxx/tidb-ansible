@@ -1,0 +1,8 @@
+---
+
+- include_tasks: "{{ deployment_method }}_deployment.yml"
+
+#  TODO 为啥放不进去呢？
+#- name: prepare firewalld white list
+#  set_fact:
+#    firewalld_ports: "{{ [redis_exporter_port ~ '/tcp'] + firewalld_ports }}"

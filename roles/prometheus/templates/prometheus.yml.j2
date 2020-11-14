@@ -57,6 +57,7 @@ alerting:
 #      - 'alertmanager_host:9093'
 {% endif -%}
 
+{# 将inventory中的变量 转换成jinja2变量 #}
 {% set pushgateway_addrs = [] -%}
 {% for host in groups.monitoring_servers -%}
   {% set pushgateway_ip = hostvars[host].ansible_host | default(hostvars[host].inventory_hostname) -%}

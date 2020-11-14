@@ -1,0 +1,9 @@
+---
+
+# default configuration for node_exporter
+
+redis_exporter_log_level: info
+redis_exporter_log_filename: "redis_exporter.log"
+
+redis_exporter_tag: v1.12.0
+

@@ -1,0 +1,72 @@
+---
+
+# 留着删除用
+# systemctl stop mysqld.service && rm -rf /usr/lib/systemd/system/mysqld.service && rm -rf /etc/init.d/mysql && rm -rf /home/easy/ds/mysql/
+
+# copy
+- name: mysql create related folders
+  file: name={{ item }} state=directory mode=755 recurse=yes
+  with_items:
+    - "{{ deploy_dir }}"
+
+- name: mysql install
+  unarchive:
+    src={{ gz_dir }}/mysql-{{ mysql_version }}-linux-glibc2.12-x86_64.tar.gz
+    dest={{ deploy_dir }}
+    mode=755
+
+- name: mysql copy config
+  template: src=my.cnf.j2 dest=/etc/my.cnf mode=755
+
+- name: mysql copy service
+#  template: src=mysqld.service.j2 dest=/usr/lib/systemd/system/mysqld.service mode=755
+  template: src=mysqld.service.j2 dest=/etc/systemd/system/mysqld.service mode=755
+
+- name: mysql copy change pasword shell
+  template: src=change_password.sh.j2 dest={{ mysql_home }}/change_password.sh mode=755
+
+- name: mysql create directories needed at runtime
+  file: name={{ item }} state=directory mode=755 recurse=yes
+  with_items:
+    - "/var/log/mysql"
+    - "/var/run/mysqld"
+    - "{{ mysql_home }}/tmp"
+    - "{{ mysql_home }}/log"
+    - "{{ mysql_home }}/data"
+
+- name: mysql create error log
+  file: dest={{ mysql_home }}/log/error.log state=touch mode=777
+
+# install
+- name: mysql init
+  shell: "{{ mysql_home }}/bin/mysqld --initialize-insecure --user=root --basedir={{ mysql_home }}  --datadir={{ mysql_home }}/data"
+
+- name: mysql copy server to etc
+  copy: src={{ mysql_home }}/support-files/mysql.server dest=/etc/init.d/mysql
+
+- name: mysql change config 1
+  lineinfile:
+    dest: /etc/init.d/mysql
+    regexp: "^basedir="
+    insertbefore: "^# Default value, in seconds, afterwhich the script should timeout waiting"
+    line: "basedir={{ mysql_home }}"
+
+- name: mysql change config 2
+  lineinfile:
+    dest: /etc/init.d/mysql
+    regexp: "^datadir="
+    insertbefore: "^# Default value, in seconds, afterwhich the script should timeout waiting"
+    line: "datadir={{ mysql_home }}"
+
+- name: mysql change config 3
+  file: dest=/etc/init.d/mysql state=file mode=755
+
+- name: mysql source profile
+  shell: 'if [ `grep {{ mysql_home }}/bin /etc/profile | wc -l` -eq 0 ]; then echo export PATH={{ mysql_home }}/bin:\$PATH >> /etc/profile && source /etc/profile; else source /etc/profile; fi'
+
+- name: mysql start
+  shell: "systemctl daemon-reload && systemctl enable mysqld && systemctl start mysqld"
+
+- name: mysql setting root password
+  shell: "bash {{ mysql_home }}/change_password.sh && systemctl stop mysqld"
+
