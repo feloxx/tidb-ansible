@@ -70,4 +70,10 @@
   become_method: sudo
   shell: "echo {{ host_name }} > /etc/hostname"
 
-# TODO 以后来实现批量修改合并host
+- name: merge host
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ hostvars[item].host_ip }} {{ hostvars[item].host_name }}"
+  with_items: "{{ groups.all_servers }}"

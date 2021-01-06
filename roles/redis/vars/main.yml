@@ -1,0 +1,6 @@
+redis_dir: "{{ deploy_dir }}/redis-{{ redis_version }}"
+bin_dir: "{{ redis_dir }}/bin"
+conf_dir: "{{ redis_dir }}/conf"
+data_dir: "{{ redis_dir }}/data"
+log_dir: "{{ redis_dir }}/log"
+code_dir: "{{ redis_dir }}/code"

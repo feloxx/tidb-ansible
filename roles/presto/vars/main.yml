@@ -1,0 +1,4 @@
+presto_dir: "{{ deploy_dir }}/presto-{{ presto_version }}"
+conf_dir: "{{ presto_dir }}/etc"
+data_dir: "{{ presto_dir }}/data"
+catalog_dir: "{{ conf_dir }}/catalog"

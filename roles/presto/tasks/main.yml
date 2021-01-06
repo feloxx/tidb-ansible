@@ -1,0 +1,56 @@
+---
+
+- name: load presto config
+  include_vars:
+    file={{ playbook_dir }}/conf/presto/config.yml name=config_custom
+
+- name: load presto log
+  include_vars:
+    file={{ playbook_dir }}/conf/presto/log.yml name=log_custom
+
+#- name: load presto log
+#  include_vars:
+#    dir={{ playbook_dir }}/conf/presto/catalog/ name=catalog
+
+- name: load default config
+  include_vars: file=default.yml name=config_default
+
+- name: combine config
+  set_fact:
+    presto_conf: "{{ {} | with_default_dicts(config_custom, config_default) | update_default_dicts }}"
+    log_conf: "{{ {} | with_default_dicts(log_custom, config_default) | update_default_dicts }}"
+
+- name: create related folders
+  file: name={{ item }} state=directory mode=755
+  with_items:
+    - "{{ presto_dir }}"
+    - "{{ conf_dir }}"
+    - "{{ data_dir }}"
+
+- name: install
+  unarchive:
+    src={{ gz_dir }}/presto-server-{{ presto_version }}.tar.gz
+    dest={{ presto_dir }}
+    mode=755
+
+- name: copy presto coordinator config
+  template: src=config.coordinator.properties.j2 dest={{ conf_dir }}/config.properties mode=0755
+  when: name is defined and name == "coordinator"
+
+- name: copy presto worker config
+  template: src=config.worker.properties.j2 dest={{ conf_dir }}/config.properties mode=0755
+  when: name is defined and name == "worker"
+
+- name: copy catalog config
+  copy: src="{{ playbook_dir }}/conf/presto/catalog" dest="{{ catalog_dir }}" mode=0755
+
+#- name: copy catalog config
+#TODO 循环生成配置文件
+
+- name: setting profile
+  become: yes
+  become_method: sudo
+  lineinfile: dest="/etc/profile" state=present regexp={{ item.regexp }} line={{ item.line }}
+  with_items:
+    - { regexp: 'PRESTO_HOME=', line: 'export PRESTO_HOME={{ presto_home }}' }
+    - { regexp: 'PATH=\$PRESTO_HOME', line: 'export PATH=$PRESTO_HOME/bin:$PATH' }

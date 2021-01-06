@@ -1,0 +1,17 @@
+---
+
+coordinator:
+  # coordinator: true
+  # node-scheduler.include-coordinator: false
+  # http-server.http.port: 8089
+  # query.max-memory: "4GB"
+  # query.max-memory-per-node: "1GB"
+  # discovery-server.enabled: true
+  # discovery.uri: "http://presto-master:8089"
+
+worker:
+  # coordinator: false
+  # http-server.http.port: 8089
+  # query.max-memory: 4GB
+  # query.max-memory-per-node: 1GB
+  # discovery.uri: http://presto-master:8089

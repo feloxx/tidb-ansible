@@ -200,84 +200,32 @@
   roles:
     - perf_tools
 
-# The Playbook of BigData
-
-- name: deploying java
+- name: deploy redis
+  gather_facts: false
   any_errors_fatal: true
-  hosts: all_servers
+  hosts: redis_servers
   tags:
-    - java
+    - redis
   roles:
-    - java
+    - redis
 
-- name: deploying scala
+- name: deploying redis_exporter
+  hosts: redis_monitored_servers
+  tags:
+    - redis
+  roles:
+    - redis_exporter
+
+
+- name: deploy mysql
+  become: yes
+  become_method: sudo
+  gather_facts: false
   any_errors_fatal: true
-  hosts: all_servers
+  hosts: mysql_servers
   tags:
-    - scala
+    - mysql
   roles:
-    - scala
+    - mysql
 
-- name: deploying zookeeper
-  any_errors_fatal: true
-  hosts: zookeeper_servers
-  tags:
-    - zookeeper
-  roles:
-    - zookeeper
 
-- name: deploying hadoop
-  any_errors_fatal: true
-  hosts: hadoop_servers
-  tags:
-    - hadoop
-  roles:
-    - hadoop
-
-- name: deploying hive
-  any_errors_fatal: true
-  hosts: hive_servers
-  tags:
-    - hive
-  roles:
-    - hive
-
-- name: deploying spark
-  any_errors_fatal: true
-  hosts: spark_servers
-  tags:
-    - spark
-  roles:
-    - spark
-
-- name: deploying sqoop
-  any_errors_fatal: true
-  hosts: sqoop_servers
-  tags:
-    - sqoop
-  roles:
-    - sqoop
-
-#- name: deploying ds
-#  any_errors_fatal: true
-#  hosts: ds_servers
-#  tags:
-#    - ds
-#  roles:
-#    - ds
-
-# TODO ds and zookeeper must be on the same node
-#- name: cleaning ds zookeeper path
-#  hosts: zookeeper_servers[0]
-#  tags:
-#    - ds
-#  tasks:
-#    - name: check zookeeper
-#      shell: ps -ef | grep QuorumPeerMain | grep -v grep | wc -l
-#      register: check_zookeeper
-#    - name: clean ds zookeeper node
-#      shell: "source /etc/profile && {{ zookeeper_home }}/bin/zkCli.sh -server {% for url in groups['zookeeper_servers'] %}{{ hostvars[url].ansible_host }}:2181{% if not loop.last %}{{','}}{% endif %}{% endfor %} rmr /dolphinscheduler"
-#      when: check_zookeeper.stdout | int > 0
-#    - name: ds deoploy successful
-#      debug: msg=The address of ds is {{ hostvars[groups['ds_api_log_alert'][0]].ansible_host }}
-#

@@ -1,0 +1,7 @@
+sentinel monitor mymaster {% for item in groups['redis_servers'] %}{% if hostvars[item].name == 'master' %}{{ hostvars[item].ansible_host }}{% endif %}{% endfor %} 6379 2
+{% for item, value in sentinel_conf.sentinel | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} {{ value }}
+{% else %}
+{% endif %}
+{% endfor %}

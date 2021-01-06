@@ -8,7 +8,8 @@
   - "{{ tikv_data_dir }}"
   - "{{ tikv_conf_dir }}"
 
-- include_tasks: check_filesystem.yml
+# 检查文件系统
+#- include_tasks: check_filesystem.yml
 
 - include_tasks: check_certs.yml
   when: enable_tls|default(false)

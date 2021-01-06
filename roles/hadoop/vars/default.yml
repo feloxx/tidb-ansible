@@ -68,7 +68,7 @@ yarn:
 
   yarn.log-aggregation-enable: "true"
   yarn.log-aggregation.retain-seconds: 604800
-  yarn.nodemanager.remote-app-log-dir: "{{ hadoop_home }}/log"
+  yarn.nodemanager.remote-app-log-dir: "/yarn/logs"
 
   yarn.nodemanager.resource.memory-mb: 32768
   yarn.scheduler.maximum-allocation-mb: 32768

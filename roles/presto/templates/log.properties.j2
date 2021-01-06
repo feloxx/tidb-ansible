@@ -1,0 +1,6 @@
+{% for item, value in log_conf.log | dictsort_by_value_type %}
+{% if value is not mapping -%}
+{{ item }}={{ value }}
+{% else %}
+{% endif %}
+{% endfor %}

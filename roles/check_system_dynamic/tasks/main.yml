@@ -59,12 +59,15 @@
   register: ulimit
   changed_when: False
 
-- name: Preflight check - ulimit -n
-  fail:
-    msg: 'The default maximum number of open file descriptors is too low {{ ulimit.stdout }}, should be {{ min_open_fds }}'
-  when: ulimit.stdout|int < min_open_fds|int
+# TODO 测试临时取消
 
-- name: Preflight check - Check swap
-  fail:
-    msg: "Swap is on, for best performance, turn swap off"
-  when: ansible_swaptotal_mb != 0
+#- name: Preflight check - ulimit -n
+#  fail:
+#    msg: 'The default maximum number of open file descriptors is too low {{ ulimit.stdout }}, should be {{ min_open_fds }}'
+#  when: ulimit.stdout|int < min_open_fds|int
+
+# 检查交换分区
+#- name: Preflight check - Check swap
+#  fail:
+#    msg: "Swap is on, for best performance, turn swap off"
+#  when: ansible_swaptotal_mb != 0

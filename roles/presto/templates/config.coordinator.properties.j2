@@ -1,0 +1,6 @@
+{% for item, value in presto_conf.coordinator | dictsort_by_value_type %}
+{% if value is not mapping -%}
+{{ item }}={{ value }}
+{% else %}
+{% endif %}
+{% endfor %}

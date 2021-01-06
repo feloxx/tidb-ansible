@@ -1,0 +1,7 @@
+{% for item, value in redis_conf.redis | dictsort_by_value_type -%}
+{% if value is not mapping -%}
+{{ item }} {{ value }}
+{% else %}
+{% endif %}
+{% endfor %}
+slaveof {% for item in groups['redis_servers'] %}{% if hostvars[item].name == 'master' %}{{ hostvars[item].ansible_host }}{% endif %}{% endfor %} {{ redis_conf.redis.port }}

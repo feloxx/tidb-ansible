@@ -1,0 +1,68 @@
+---
+
+# TODO 测试的时候用
+- name: delete related folders
+  file: name={{ item }} state=absent
+  with_items:
+    - "{{ redis_dir }}"
+
+- name: load custom redis
+  include_vars:
+    file={{ playbook_dir }}/conf/redis/redis.yml name=redis_conf
+
+- name: load custom sentinel
+  include_vars:
+    file={{ playbook_dir }}/conf/redis/sentinel.yml name=sentinel_conf
+
+- name: load default config
+  include_vars: file=default.yml name=conf_default
+
+- name: combine config
+  set_fact:
+    redis_conf: "{{ {} | with_default_dicts(redis_conf, conf_default) | update_default_dicts }}"
+    sentinel_conf: "{{ {} | with_default_dicts(sentinel_conf, conf_default) | update_default_dicts }}"
+
+- name: create related folders
+  file: name={{ item }} state=directory mode=755 recurse=yes
+  with_items:
+    - "{{ redis_dir }}"
+    - "{{ bin_dir }}"
+    - "{{ conf_dir }}"
+    - "{{ data_dir }}"
+    - "{{ log_dir }}"
+    - "{{ code_dir }}"
+
+- name: copy gz
+  copy: src="{{ gz_dir }}/redis-{{ redis_version }}.tar.gz" dest="/tmp/redis-{{ redis_version }}.tar.gz"
+
+- name: install use shell
+  shell: "tar -zxf /tmp/redis-{{ redis_version }}.tar.gz \
+            -C {{ code_dir }}/ \
+            --strip-component=1"
+
+- name: make the default target
+  shell: "cd {{ code_dir }}/src && make && mv redis* {{ bin_dir }}/ && mv *.o {{ bin_dir }}/"
+
+- name: copy redis master config
+  template: src=redis-master.conf.j2 dest={{ conf_dir }}/redis.conf mode=755
+  when: name is defined and name == "master"
+
+- name: copy redis slave config
+  template: src=redis-slave.conf.j2 dest={{ conf_dir }}/redis.conf mode=755
+  when: name is defined and name == "slave"
+
+- name: copy sentinel config
+  template: src=sentinel.conf.j2 dest={{ conf_dir }}/sentinel.conf mode=755
+
+- name: copy service
+  become: yes
+  become_method: sudo
+  template: src=redis.service.j2 dest=/etc/systemd/system/redis.service mode=755
+
+- name: setting profile
+  become: yes
+  become_method: sudo
+  lineinfile: dest="/etc/profile" state=present regexp={{ item.regexp }} line={{ item.line }}
+  with_items:
+    - { regexp: 'REDIS_HOME=', line: 'export REDIS_HOME={{ redis_home }}' }
+    - { regexp: 'PATH=\$REDIS_HOME', line: 'export PATH=$REDIS_HOME/bin:$PATH' }
