@@ -34,7 +34,7 @@
   any_errors_fatal: true
   tags:
 #    - always
-    - all_servers # TODO 方便调试
+    - check_config_static # TODO 方便调试
   roles:
     - check_config_static
 
@@ -43,7 +43,7 @@
   any_errors_fatal: true
   tags:
 #    - always
-    - all_servers # TODO 方便调试
+    - check_system_dynamic # TODO 方便调试
   roles:
     - check_system_dynamic
 
@@ -52,7 +52,7 @@
   any_errors_fatal: true
   tags:
 #    - always
-    - all_servers # TODO 方便调试
+    - check_config_dynamic # TODO 方便调试
   roles:
     - check_config_dynamic
 
@@ -189,6 +189,8 @@
 - name: finalizing deployment target
   hosts: all
   become: true
+  tags:
+    - firewalld
   roles:
     - { role: firewalld, when: enable_firewalld is defined and enable_firewalld }
 

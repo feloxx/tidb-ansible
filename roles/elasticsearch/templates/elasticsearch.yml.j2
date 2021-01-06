@@ -1,0 +1,13 @@
+cluster.name: {{ cluster_name }}
+
+node.name: {{ ansible_host }}
+
+path.data: {{ elasticsearch_dir }}/data
+path.logs: {{ elasticsearch_dir }}/logs
+
+network.host: {{ ansible_host }}
+http.port: 9200
+
+discovery.zen.ping.unicast.hosts: [{% for url in groups['elasticsearch_servers'] %}"{{ hostvars[url].ansible_host }}"{% if not loop.last %}{{','}}{% endif %}{% endfor %}]
+
+

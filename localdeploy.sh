@@ -1,17 +1,17 @@
 #!/usr/bin/expect
 
 set localFile  "."
-set remoteDir  "$1"
-set remoteIp   "$2"
-set remotePort "$3"
-set remoteUser "$4"
-set remotePwd  "$5"
+set remoteDir  "~/tidb-ansible-v3.0.15-cdpmagic"
+set remoteIp   "10.150.31.29"
+set remotePort "22"
+set remoteUser "zhujinlong191211"
+set remotePwd  "Snj7jqIjPfae4V"
 
 set timeout 3600
 
 exec sh -c {echo "" > ./rsync.log}
 
-spawn rsync -arqPz --log-file "./rsync.log" --exclude ".idea" --exclude "*.vswp" --exclude "*.swp" --exclude "*.DS_Store" -e "ssh -l$remoteUser -p$remotePort" $localFile $remoteIp:$remoteDir
+spawn rsync -arqPz --log-file "./rsync.log" --exclude ".idea" --exclude "*.vswp" --exclude "*.swp" --exclude "*.git" --exclude "*.DS_Store" -e "ssh -l$remoteUser -p$remotePort" $localFile $remoteIp:$remoteDir
 
 expect {
     "password:" {

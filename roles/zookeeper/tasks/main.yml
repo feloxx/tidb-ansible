@@ -5,14 +5,14 @@
   with_items:
     - "{{ zookeeper_dir }}"
     - "{{ zookeeper_data }}"
-    - "{{ zookeeper_log }}"
+#    - "{{ zookeeper_log }}" # TODO <3.6.*
 
 - name: create related folders
   file: name={{ item }} state=directory mode=755
   with_items:
     - "{{ zookeeper_dir }}"
     - "{{ zookeeper_data }}"
-    - "{{ zookeeper_log }}"
+#    - "{{ zookeeper_log }}" # TODO <3.6.*
 
 - name: install
   unarchive:
@@ -23,11 +23,16 @@
 - name: add myid file
   shell: "echo {{ myid }} > {{ zookeeper_data }}/myid"
 
-- name: copy zoo.cfg
-  template: src=zoo.cfg.j2 dest={{ zookeeper_dir }}/conf/zoo.cfg mode=755
+# TODO <3.6.*
+#- name: copy zoo.cfg
+#  template: src=zoo.cfg.j2 dest={{ zookeeper_dir }}/conf/zoo.cfg mode=755
 
-- name: specifying the log location
-  replace: dest={{ zookeeper_dir }}/bin/zkEnv.sh regexp='ZOO_LOG_DIR=\".\"' replace='ZOO_LOG_DIR=\"{{ zookeeper_log }}\"' backup=yes
+- name: copy zoo.cfg.36
+  template: src=zoo.cfg.36.j2 dest={{ zookeeper_dir }}/conf/zoo.cfg mode=755
+
+# TODO <3.6.*
+#- name: specifying the log location
+#  replace: dest={{ zookeeper_dir }}/bin/zkEnv.sh regexp='ZOO_LOG_DIR=\".\"' replace='ZOO_LOG_DIR=\"{{ zookeeper_log }}\"' backup=yes
 
 - name: setting profile
   become: yes

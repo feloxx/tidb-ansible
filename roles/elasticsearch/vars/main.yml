@@ -1,0 +1,2 @@
+elasticsearch_dir: "{{ deploy_dir }}/elasticsearch-{{ elasticsearch_version }}"
+conf_dir: "{{ elasticsearch_dir }}/config"
