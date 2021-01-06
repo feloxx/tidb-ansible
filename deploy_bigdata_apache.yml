@@ -74,8 +74,6 @@
   roles:
     - sqoop
 
-
-
 - name: deploying ds
   any_errors_fatal: true
   hosts: ds_servers
