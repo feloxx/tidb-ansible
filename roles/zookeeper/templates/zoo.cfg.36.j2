@@ -1,0 +1,14 @@
+clientPort=2181
+tickTime=2000
+initLimit=10
+syncLimit=5
+maxClientCnxns=8192
+dataDir={{ zookeeper_data }}
+
+{% for url in groups['zookeeper_servers'] %}
+server.{{ loop.index }}={{ hostvars[url].ansible_host }}:2888:3888
+{% endfor %}
+
+metricsProvider.className=org.apache.zookeeper.metrics.prometheus.PrometheusMetricsProvider
+metricsProvider.httpPort=7000
+metricsProvider.exportJvmInfo=true

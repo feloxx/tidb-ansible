@@ -1,0 +1,19 @@
+---
+
+- name: fuck all host
+  any_errors_fatal: true
+  hosts: all_servers
+  gather_facts: false
+  tasks:
+  - name: change host
+    become: yes
+    become_method: sudo
+    hostname: "name={{ host_name }}"
+
+  - name: merge host
+    become: yes
+    become_method: sudo
+    lineinfile:
+      dest: /etc/hosts
+      line: "{{ hostvars[item].host_ip }} {{ hostvars[item].host_name }}"
+    with_items: "{{ groups.all_servers }}"

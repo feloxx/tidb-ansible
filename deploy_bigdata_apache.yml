@@ -1,5 +1,15 @@
 # The Playbook of BigData
 
+- name: create status directory
+  gather_facts: false
+  any_errors_fatal: true
+  hosts: all_servers
+  tasks:
+    - name: create status directory
+      file: path={{ item }} state=directory mode=0755
+      with_items:
+        - "{{ status_dir }}"
+
 - name: deploying java
   any_errors_fatal: true
   hosts: all_servers
@@ -64,28 +74,33 @@
   roles:
     - sqoop
 
-
-
-#- name: deploying ds
-#  any_errors_fatal: true
-#  hosts: ds_servers
-#  tags:
-#    - ds
-#  roles:
-#    - ds
+- name: deploying ds
+  any_errors_fatal: true
+  hosts: ds_servers
+  tags:
+    - ds
+  roles:
+    - ds
 
 # TODO ds and zookeeper must be on the same node
-#- name: cleaning ds zookeeper path
-#  hosts: zookeeper_servers[0]
-#  tags:
-#    - ds
-#  tasks:
-#    - name: check zookeeper
-#      shell: ps -ef | grep QuorumPeerMain | grep -v grep | wc -l
-#      register: check_zookeeper
-#    - name: clean ds zookeeper node
-#      shell: "source /etc/profile && {{ zookeeper_home }}/bin/zkCli.sh -server {% for url in groups['zookeeper_servers'] %}{{ hostvars[url].ansible_host }}:2181{% if not loop.last %}{{','}}{% endif %}{% endfor %} rmr /dolphinscheduler"
-#      when: check_zookeeper.stdout | int > 0
-#    - name: ds deoploy successful
-#      debug: msg=The address of ds is {{ hostvars[groups['ds_api_log_alert'][0]].ansible_host }}
-#
+- name: cleaning ds zookeeper path
+  hosts: zookeeper_servers[0]
+  tags:
+    - ds
+  tasks:
+    - name: check zookeeper
+      shell: ps -ef | grep QuorumPeerMain | grep -v grep | wc -l
+      register: check_zookeeper
+    - name: clean ds zookeeper node
+      shell: "source /etc/profile && {{ zookeeper_home }}/bin/zkCli.sh -server {% for url in groups['zookeeper_servers'] %}{{ hostvars[url].ansible_host }}:2181{% if not loop.last %}{{','}}{% endif %}{% endfor %} rmr /dolphinscheduler"
+      when: check_zookeeper.stdout | int > 0
+    - name: ds deoploy successful
+      debug: msg=The address of ds is {{ hostvars[groups['ds_api_log_alert'][0]].ansible_host }}
+
+- name: deploying elasticsearch
+  any_errors_fatal: true
+  hosts: elasticsearch_servers
+  tags:
+    - elasticsearch
+  roles:
+    - elasticsearch

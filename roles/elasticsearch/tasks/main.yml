@@ -1,0 +1,42 @@
+---
+
+# TODO 后续实现
+#- name: load site
+#  include_vars:
+#    file={{ playbook_dir }}/conf/elasticsearch/elasticsearch.yml name=elasticsearch_custom
+#
+#- name: load default config
+#  include_vars: file=default.yml name=conf_default
+#
+#- name: combine config
+#  set_fact:
+#    hive_conf: "{{ {} | with_default_dicts(elasticsearch_custom, conf_default) | update_default_dicts }}"
+
+- name: delete related folders
+  file: name={{ item }} state=absent
+  with_items:
+    - "{{ elasticsearch_dir }}"
+
+- name: create related folders
+  file: name={{ item }} state=directory mode=755
+  with_items:
+    - "{{ elasticsearch_dir }}"
+    - "{{ elasticsearch_dir }}/data"
+    - "{{ elasticsearch_dir }}/logs"
+
+- name: install
+  unarchive:
+    src={{ gz_dir }}/elasticsearch-{{ elasticsearch_version }}.tar.gz
+    dest={{ deploy_dir }}
+    mode=755
+
+- name: copy elasticsearch.yml
+  template: src=elasticsearch.yml.j2 dest={{ conf_dir }}/elasticsearch.yml mode=755
+
+- name: setting profile
+  become: yes
+  become_method: sudo
+  lineinfile: dest="/etc/profile" state=present regexp={{ item.regexp }} line={{ item.line }}
+  with_items:
+    - { regexp: 'ELASTICSEARCH_HOME=', line: 'export ELASTICSEARCH_HOME={{ elasticsearch_home }}' }
+    - { regexp: 'PATH=\$ELASTICSEARCH_HOME', line: 'export PATH=$ELASTICSEARCH_HOME/bin:$PATH' }

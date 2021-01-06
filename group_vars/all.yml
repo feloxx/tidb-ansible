@@ -34,6 +34,8 @@ ds_home: "{{ root_dir }}/ds/ds-{{ ds_version }}"
 mysql_home: "{{ root_dir }}/mysql/mysql-{{ mysql_version }}-linux-glibc2.12-x86_64"
 redis_home: "{{ root_dir }}/redis/redis-{{ redis_version }}"
 
+elasticsearch_home: "{{ root_dir }}/elasticsearch/elasticsearch-{{ elasticsearch_version }}"
+
 # default configuration for multiple host groups and roles
 node_exporter_port: 9100
 blackbox_exporter_port: 9115

@@ -77,3 +77,4 @@
     dest: /etc/hosts
     line: "{{ hostvars[item].host_ip }} {{ hostvars[item].host_name }}"
   with_items: "{{ groups.all_servers }}"
+

@@ -3,8 +3,8 @@
 env:
   JAVA_HOME: "{{ java_home }}"
   HADOOP_SSH_OPTS: "-p {{ ansible_port }}"
-  HADOOP_NAMENODE_OPTS: "-XX:+UseG1GC -Xms8g -Xmx8g -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:{{ hadoop_home }}/logs/GC.log"
-  HADOOP_DATANODE_OPTS: "-XX:+UseG1GC -Xmx8g"
+  HADOOP_NAMENODE_OPTS: "-XX:+UseG1GC -Xms2g -Xmx2g -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:{{ hadoop_home }}/logs/GC.log"
+  HADOOP_DATANODE_OPTS: "-XX:+UseG1GC -Xmx4g"
 
 core:
   fs.defaultFS: "hdfs://{{ cluster_name }}"
@@ -70,10 +70,10 @@ yarn:
   yarn.log-aggregation.retain-seconds: 604800
   yarn.nodemanager.remote-app-log-dir: "/yarn/logs"
 
-  yarn.nodemanager.resource.memory-mb: 32768
-  yarn.scheduler.maximum-allocation-mb: 32768
-  yarn.app.mapreduce.am.resource.mb: 8192
-  yarn.nodemanager.resource.cpu-vcores: 16
+  yarn.nodemanager.resource.memory-mb: 4096
+  yarn.scheduler.maximum-allocation-mb: 4096
+  yarn.app.mapreduce.am.resource.mb: 4096
+  yarn.nodemanager.resource.cpu-vcores: 4
 
   yarn.resourcemanager.ha.enabled: "true"
   yarn.resourcemanager.ha.automatic-failover.enabled: "true"

@@ -540,96 +540,106 @@
 
 # The Playbook of BigData
 
-#- name: zookeeper
-#  gather_facts: false
-#  any_errors_fatal: true
-#  hosts: zookeeper_servers
-#  tags:
-#    - zookeeper
-#  tasks:
-#    - name: start
-#      shell: "source /etc/profile && sh {{ zookeeper_home }}/bin/zkServer.sh start"
-#
-#- name: hadoop initialization was successful
-#  ignore_errors: True
-#  hosts: namenode_servers[0]
-#  tags:
-#    - init_hadoop
-#  tasks:
-#    - name:
-#      shell: "cat {{ root_dir }}/status/init_hadoop.ok"
-#      register: check_init_hadoop
-#
-#- name: deploying hadoop init
-#  any_errors_fatal: true
-#  hosts: namenode_servers
-#  tags:
-#    - init_hadoop
-#  roles:
-#    - { role: init_hadoop, when: "hostvars[groups.namenode_servers[0]].check_init_hadoop != 'ok'" }
-#
-#- name: hadoop
-#  gather_facts: false
-#  any_errors_fatal: true
-#  hosts: hadoop_servers
-#  tags:
-#    - hadoop
-#  tasks:
-#    - name: start hdfs on hadoop1
-#      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/start-dfs.sh"
-#      when: name is defined and name == "master"
-#
-#    - name: start yarn on hadoop2
-#      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/start-yarn.sh"
-#      when: name is defined and name == "master"
-#
-#    - name: start yarn bak service on hadoop1
-#      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/yarn-daemon.sh start resourcemanager"
-#      when: name is defined and name == "slave"
-#
-#    - name: start yarn proxy on hadoop2
-#      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/yarn-daemon.sh start proxyserver"
-#      when: name is defined and name == "master"
-#
-#    - name: start yarn history log on hadoop1
-#      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/mr-jobhistory-daemon.sh start historyserver"
-#      when: name is defined and name == "slave"
-#
-#- name: hive initialization was successful
-#  ignore_errors: True
-#  hosts: hive_servers[0]
-#  tags:
-#    - init_hive
-#  tasks:
-#    - name:
-#      shell: "cat {{ root_dir }}/status/init_hive.ok"
-#      register: check_init_hive
-#
-#- name: deploying hive init
-#  any_errors_fatal: true
-#  hosts: hive_servers[0]
-#  tags:
-#    - init_hive
-#  roles:
-#    - { role: init_hive, when: "hostvars[groups.hive_servers[0]].check_init_hive != 'ok'" }
+- name: zookeeper
+  gather_facts: false
+  any_errors_fatal: true
+  hosts: zookeeper_servers
+  tags:
+    - zookeeper
+  tasks:
+    - name: start
+      shell: "source /etc/profile && sh {{ zookeeper_home }}/bin/zkServer.sh start"
+
+- name: hadoop initialization was successful
+  ignore_errors: True
+  hosts: namenode_servers[0]
+  tags:
+    - init_hadoop
+  tasks:
+    - name:
+      shell: "cat {{ root_dir }}/status/init_hadoop.ok"
+      register: check_init_hadoop
+
+- name: deploying hadoop init
+  any_errors_fatal: true
+  hosts: namenode_servers
+  tags:
+    - init_hadoop
+  roles:
+    - { role: init_hadoop, when: "hostvars[groups.namenode_servers[0]].check_init_hadoop != 'ok'" }
+
+- name: hadoop
+  gather_facts: false
+  any_errors_fatal: true
+  hosts: hadoop_servers
+  tags:
+    - hadoop
+  tasks:
+    - name: start hdfs on hadoop1
+      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/start-dfs.sh"
+      when: name is defined and name == "master"
+
+    - name: start yarn on hadoop2
+      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/start-yarn.sh"
+      when: name is defined and name == "master"
+
+    - name: start yarn bak service on hadoop1
+      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/yarn-daemon.sh start resourcemanager"
+      when: name is defined and name == "slave"
+
+    - name: start yarn proxy on hadoop2
+      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/yarn-daemon.sh start proxyserver"
+      when: name is defined and name == "master"
+
+    - name: start yarn history log on hadoop1
+      shell: "source /etc/profile && sh {{ hadoop_home }}/sbin/mr-jobhistory-daemon.sh start historyserver"
+      when: name is defined and name == "slave"
+
+- name: hive initialization was successful
+  ignore_errors: True
+  hosts: hive_servers[0]
+  tags:
+    - init_hive
+  tasks:
+    - name:
+      shell: "cat {{ root_dir }}/status/init_hive.ok"
+      register: check_init_hive
+
+- name: deploying hive init
+  any_errors_fatal: true
+  hosts: hive_servers[0]
+  tags:
+    - init_hive
+  roles:
+    - { role: init_hive, when: "hostvars[groups.hive_servers[0]].check_init_hive != 'ok'" }
 
 
-#- name: ds
-#  gather_facts: false
-#  any_errors_fatal: true
-#  hosts: ds_api_log_alert
-#  tags:
-#    - ds
-#  tasks:
-#    - name: start
-#      shell: "source /etc/profile && sh {{ ds_home }}/bin/start-all.sh"
+- name: ds
+  gather_facts: false
+  any_errors_fatal: true
+  hosts: ds_api_log_alert
+  tags:
+    - ds
+  tasks:
+    - name: start
+      shell: "source /etc/profile && sh {{ ds_home }}/bin/start-all.sh"
 
-#- name: presto
-#  gather_facts: false
-#  any_errors_fatal: true
-#  hosts: presto_servers
-#  tags:
-#    - presto
-#  tasks:
-#    - name: start
-#      shell: "source /etc/profile && sh {{ presto_home }}/bin/launcher start"
+- name: presto
+  gather_facts: false
+  any_errors_fatal: true
+  hosts: presto_servers
+  tags:
+    - presto
+  tasks:
+    - name: start
+      shell: "source /etc/profile && sh {{ presto_home }}/bin/launcher start"
+
+- name: elasticsearch
+  gather_facts: false
+  any_errors_fatal: true
+  hosts: elasticsearch_servers
+  tags:
+    - elasticsearch
+  tasks:
+    - name: start
+      shell: "source /etc/profile && ulimit -n 1000000 && {{ elasticsearch_home }}/bin/elasticsearch -d"
